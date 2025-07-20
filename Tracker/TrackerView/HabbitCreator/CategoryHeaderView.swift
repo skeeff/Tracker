@@ -1,6 +1,6 @@
 import UIKit
 
-class CategoryHeaderView: UICollectionReusableView {
+final class CategoryHeaderView: UICollectionReusableView {
     
     let headerLabel = UILabel()
     

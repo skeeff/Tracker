@@ -1,19 +1,5 @@
 import UIKit
 
-struct TempResources {
-    static let trackerEmojis: [String] = [
-        "❤️", "🧡", "💛", "💚", "💙", "💜", "💖", "💝", "💘", "💔",
-        "😀", "😁", "😂", "🤣", "😃", "😄", "😅", "😆", "😇", "😉",
-        "🐶", "🐱", "🐭", "🐹", "🐰", "🦊", "🐻", "🐼", "🐨", "🐯",
-        "🍎", "🍐", "🍊", "🍋", "🍌", "🍉", "🍇", "🍓", "🍒", "🍑",
-        "🍔", "🍕", "🍟", "🌮", "🍦", "🍩", "🍪", "🍫", "🍬", "🍭",
-        "⚽️", "🏀", "🏈", "⚾️", "🎾", "🏐", "🏉", "🥏", "🏓", "🏸"
-    ]
-
-    static let trackerColors: [UIColor] = [
-        .systemRed, .systemOrange, .systemBlue, .systemGreen, .systemPurple, .systemIndigo, .systemYellow, .systemTeal, .systemPink]
-}
-
 protocol HabbitCreatorProtocol: AnyObject {
     func didCreateTracker(_ tracker: Tracker, in category: String)
 }
@@ -71,6 +57,13 @@ final class HabbitCreatorViewController: UIViewController {
         return cancelButton
     }()
     
+    private lazy var emojiCollectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+//        collectionView.dataSource = self
+//        collectionView.delegate = self
+        return collectionView
+    }()
+    
     private let options = ["Категория", "Расписание"]
     private var selectedCategory: String?
     private var selectedSchedule: Set<Weekday> = []
@@ -100,8 +93,9 @@ final class HabbitCreatorViewController: UIViewController {
             titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             textField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             textField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 40),
-            textField.widthAnchor.constraint(equalToConstant: 343),
             textField.heightAnchor.constraint(equalToConstant: 75),
+            textField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            textField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             warningLabel.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 8),
             warningLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             createButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
@@ -133,19 +127,21 @@ final class HabbitCreatorViewController: UIViewController {
         view.addSubview(tableView)
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: warningLabel.bottomAnchor, constant: 24),
-            tableView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+//            tableView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             tableView.heightAnchor.constraint(equalToConstant: 150),
-            tableView.widthAnchor.constraint(equalToConstant: 343),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+//            tableView.widthAnchor.constraint(equalToConstant: 343),
         ])
     }
     
     @objc private func createButtonTapped(){
         let trackerName = textField.text ?? ""
-        guard let randomEmoji = TempResources.trackerEmojis.randomElement() else { return }
-                    guard let randomColor = TempResources.trackerColors.randomElement() else { return }
+        guard let randomEmoji = AppResources.trackerEmojis.randomElement() else { return }
+                    guard let randomColor = AppResources.trackerColors.randomElement() else { return }
         
         if !trackerName.isEmpty && selectedCategory != nil && !selectedSchedule.isEmpty {
-            let newTracker = Tracker(id: Int.random(in: 0..<1000000), // Генерируем случайный ID
+            let newTracker = Tracker(id: UUID(),
                                      name: trackerName,
                                      emoji: randomEmoji,
                                      color: randomColor,
@@ -261,7 +257,21 @@ extension HabbitCreatorViewController: ScheduleViewControllerDelegate {
         tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .automatic)
         updateCreateButtonState()
     }
-    
-    
 }
+
+//extension HabbitCreatorViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+//    
+//    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+//        return AppResources.trackerEmojis.count
+//    }
+//    
+//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+//        
+//    }
+//    
+//    func createLayout() -> UICollectionViewFlowLayout {
+//        
+//    }
+//    
+//}
 

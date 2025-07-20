@@ -69,14 +69,15 @@ final class ScheduleViewController: UIViewController {
         tableView.isScrollEnabled = true
         tableView.layer.masksToBounds = true
         tableView.layer.cornerRadius = 16
-        //        tableView.contentInset = UIEdgeInsets.init(top: -35, left: 0, bottom: 0, right: 0)
         view.addSubview(tableView)
         
         NSLayoutConstraint.activate([
-            tableView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+//            tableView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
-            tableView.widthAnchor.constraint(equalToConstant: 343),
-            tableView.heightAnchor.constraint(equalToConstant: CGFloat(weekdays.count) * 75)
+//            tableView.widthAnchor.constraint(equalToConstant: 343),
+            tableView.heightAnchor.constraint(equalToConstant: CGFloat(weekdays.count) * 80)
         ])
     }
     

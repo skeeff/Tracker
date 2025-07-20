@@ -1,5 +1,5 @@
 import UIKit
-enum Weekday: Int, CaseIterable, CustomStringConvertible, Hashable {
+enum Weekday: Int, CaseIterable, CustomStringConvertible, Hashable, Codable {
     case monday = 1
     case tuesday = 2
     case wednesday = 3
@@ -36,26 +36,86 @@ enum Weekday: Int, CaseIterable, CustomStringConvertible, Hashable {
     
     
     static func from(date: Date) -> Weekday {
-            let calendar = Calendar.current
-            // Calendar.current.component(.weekday, from: date) возвращает 1 для воскресенья, 2 для понедельника и т.д.
-            // Нам нужно скорректировать это, чтобы соответствовать нашему enum (1 = понедельник).
-            var weekdayComponent = calendar.component(.weekday, from: date)
-            if weekdayComponent == 1 { // Воскресенье
-                weekdayComponent = 7
-            } else {
-                weekdayComponent -= 1
-            }
-            return Weekday(rawValue: weekdayComponent)!
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.weekday], from: date)
+        switch components.weekday {
+        case 1: return .sunday
+        case 2: return .monday
+        case 3: return .tuesday
+        case 4: return .wednesday
+        case 5: return .thursday
+        case 6: return .friday
+        case 7: return .saturday
+        default: return .sunday
         }
+    }
 }
 
-struct Tracker {
-    let id: Int
+struct CodableColor: Codable {
+    let red: CGFloat
+    let green: CGFloat
+    let blue: CGFloat
+    let alpha: CGFloat
+    
+    init(color: UIColor) {
+        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
+        color.getRed(&r, green: &g, blue: &b, alpha: &a)
+        self.red = r
+        self.green = g
+        self.blue = b
+        self.alpha = a
+    }
+    
+    var uiColor: UIColor {
+        return UIColor(red: red, green: green, blue: blue, alpha: alpha)
+    }
+}
+
+struct Tracker: Identifiable, Codable {
+    let id: UUID
     let name: String
     let emoji: String
-    let color: UIColor
-    var daysCompleted: Int = 0
+    let color: CodableColor
     let schedule: Set<Weekday>
-    var isCompletedToday: Bool = false
-    var completedDates: Set<Date> = []
+    // daysCompleted и completedDates НЕ хранятся здесь.
+    // Они будут вычисляться на основе массива TrackerRecord.
+    
+    init(id: UUID = UUID(), name: String, emoji: String, color: UIColor, schedule: Set<Weekday>) {
+        self.id = id
+        self.name = name
+        self.emoji = emoji
+        self.color = CodableColor(color: color)
+        self.schedule = schedule
+    }
+}
+
+struct TrackerCategory: Identifiable, Codable {
+    let id: UUID
+    let category: String
+    let trackers: [Tracker]
+    
+    init(id: UUID = UUID(), category: String, trackers: [Tracker]) {
+        self.id = id
+        self.category = category
+        self.trackers = trackers
+    }
+}
+
+struct TrackerRecord: Identifiable, Codable, Hashable {
+    let id: UUID
+    let date: Date
+    
+    init(id: UUID, date: Date) {
+        self.id = id
+        self.date = date
+    }
+    
+    func hash(into hasher: inout Hasher){
+        hasher.combine(id)
+        hasher.combine(date)
+    }
+    
+    static func == (lhs: TrackerRecord, rhs: TrackerRecord) -> Bool {
+        return lhs.id == rhs.id && Calendar.current.isDate(lhs.date, inSameDayAs: rhs.date)
+    }
 }

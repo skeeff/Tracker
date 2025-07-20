@@ -6,6 +6,7 @@ final class TabBarViewController: UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpTabBar()
+        customizeTabBarAppearance()
     }
     
     func setUpTabBar(){
@@ -22,4 +23,26 @@ final class TabBarViewController: UIViewController{
         tabBarCntrl.didMove(toParent: self)
         tabBarCntrl.tabBar.isTranslucent = false
     }
+    private func customizeTabBarAppearance() {
+           let appearance = UITabBarAppearance()
+           
+           let separatorHeight: CGFloat = 1
+           let separatorColor: UIColor = UIColor(white: 0, alpha: 0.1)
+           
+           UIGraphicsBeginImageContextWithOptions(CGSize(width: 1, height: separatorHeight), false, 0.0)
+           separatorColor.setFill()
+           UIRectFill(CGRect(x: 0, y: 0, width: 1, height: separatorHeight))
+           let separatorImage = UIGraphicsGetImageFromCurrentImageContext()
+           UIGraphicsEndImageContext()
+           
+           appearance.shadowImage = separatorImage
+           appearance.backgroundColor = .white
+           
+           appearance.shadowColor = .clear
+           
+           tabBarCntrl.tabBar.standardAppearance = appearance
+           if #available(iOS 15.0, *) {
+               tabBarCntrl.tabBar.scrollEdgeAppearance = appearance
+           }
+       }
 }
