@@ -136,7 +136,7 @@ final class TrackerCell: UICollectionViewCell {
     
     @objc private func addButtonTapped(){
         guard addButton.isUserInteractionEnabled, let id = trackerID else { return }
-        
+        animateAddButtonTapped()
         if isCurrentlyCompleted {
             delegate?.didTapRemoveButton(for: id)
         }else {
@@ -159,18 +159,29 @@ final class TrackerCell: UICollectionViewCell {
         }
     }
     
+    private func animateAddButtonTapped(){
+        UIView.animate(withDuration: 0.1, animations: {
+            self.addButton.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+        }) { _ in
+            UIView.animate(withDuration: 0.1) {
+                self.addButton.transform = CGAffineTransform.identity
+            }
+        }
+
+    }
+    
     override func prepareForReuse() {
-         super.prepareForReuse()
-         trackerLabel.text = nil
-         emojiLabel.text = nil
-         cardView.backgroundColor = nil
-         addButton.backgroundColor = nil
-         addButton.setTitle(nil, for: .normal)
-         addButton.setImage(nil, for: .normal)
-         addButton.alpha = 1.0
-         addButton.isUserInteractionEnabled = true
-         quantityLabel.text = nil
-         trackerID = nil
-         isCurrentlyCompleted = false
-     }
+        super.prepareForReuse()
+        trackerLabel.text = nil
+        emojiLabel.text = nil
+        cardView.backgroundColor = nil
+        addButton.backgroundColor = nil
+        addButton.setTitle(nil, for: .normal)
+        addButton.setImage(nil, for: .normal)
+        addButton.alpha = 1.0
+        addButton.isUserInteractionEnabled = true
+        quantityLabel.text = nil
+        trackerID = nil
+        isCurrentlyCompleted = false
+    }
 }

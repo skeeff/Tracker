@@ -145,10 +145,18 @@
 				4A4C014F2E25750600D6E0A0 /* ScheduleCell.swift */,
 				4A5D5EA02E0C4D72003BC294 /* CategoryHeaderView.swift */,
 				4A5D5EA22E0C6D6C003BC294 /* HabbitCreator.swift */,
+				4A63159F2E312B0000901AED /* habbitCollectionCells */,
+			);
+			path = HabbitCreator;
+			sourceTree = "<group>";
+		};
+		4A63159F2E312B0000901AED /* habbitCollectionCells */ = {
+			isa = PBXGroup;
+			children = (
 				4A01A9982E2816290055D651 /* emojiCollectionCell.swift */,
 				4A01A99A2E28163B0055D651 /* colorColletionCell.swift */,
 			);
-			path = HabbitCreator;
+			path = habbitCollectionCells;
 			sourceTree = "<group>";
 		};
 		4ADD836C2DFE03E3006E3C1A /* Models */ = {
