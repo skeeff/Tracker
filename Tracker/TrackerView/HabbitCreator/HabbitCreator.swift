@@ -117,7 +117,7 @@ final class HabbitCreatorViewController: UIViewController {
     }()
     
     private let options = ["Категория", "Расписание"]
-    private var selectedCategory: String?
+    private var selectedCategory: String = ""
     private var selectedSchedule: Set<Weekday> = []
     private var selectedEmoji: String?
     private var selectedColor: UIColor?
@@ -206,6 +206,8 @@ final class HabbitCreatorViewController: UIViewController {
         tableView.layer.cornerRadius = 16
         tableView.layer.masksToBounds = true
         tableView.contentInset = UIEdgeInsets.init(top: -35, left: 0, bottom: 0, right: 0)
+        tableView.separatorStyle = .singleLine
+        tableView.separatorInset = .init(top: 0, left: 16, bottom: 1, right: 16)
         contentView.addSubview(tableView)
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: warningLabel.bottomAnchor, constant: 32),
@@ -248,14 +250,14 @@ final class HabbitCreatorViewController: UIViewController {
         guard let selectedEmoji else { return }
         guard let randomColor = AppResources.trackerColors.randomElement() else { return }
         
-        if !trackerName.isEmpty && selectedCategory != nil && !selectedSchedule.isEmpty {
+        if !trackerName.isEmpty && !selectedCategory.isEmpty && !selectedSchedule.isEmpty {
             let newTracker = Tracker(id: UUID(),
                                      name: trackerName,
                                      emoji: selectedEmoji,
                                      color: randomColor,
-                                     schedule: selectedSchedule)
+                                     schedule: Array(self.selectedSchedule))
             
-            delegate?.didCreateTracker(newTracker, in: selectedCategory!)
+            delegate?.didCreateTracker(newTracker, in: selectedCategory)
             self.dismiss(animated: true)
         } else {
             print("ZAPOLNENO NE VSE")
@@ -268,7 +270,7 @@ final class HabbitCreatorViewController: UIViewController {
     
     private func updateCreateButtonState() {
         let isNameValid = !(textField.text ?? "").isEmpty && (textField.text ?? "").count <= 38
-        let isCategorySelected = selectedCategory != nil
+        let isCategorySelected = !selectedCategory.isEmpty
         let isScheduleSelected = !selectedSchedule.isEmpty
         let isEmojiSelected = selectedEmoji != nil
         let isColorSelected = selectedColor != nil
@@ -327,8 +329,8 @@ extension HabbitCreatorViewController: UITableViewDataSource, UITableViewDelegat
             cell.detailTextLabel?.text = selectedCategory
             cell.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
             cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-            if let category = selectedCategory {
-                cell.detailTextLabel?.text = category
+            if !selectedCategory.isEmpty {
+                cell.detailTextLabel?.text = selectedCategory
             }
         } else {
             if selectedSchedule.isEmpty {

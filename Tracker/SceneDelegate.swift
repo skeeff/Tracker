@@ -10,10 +10,6 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
-    private var trackerStore: TrackerStoreProtocol?
-    private var trackerCategoryStore: TrackerCategoryStoreProtocol?
-    private var trackerRecordStore: TrackerRecordStoreProtocol?
-    
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
             guard let windowScene = (scene as? UIWindowScene) else { return }
@@ -24,20 +20,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             // ✅ ИСПРАВЛЕНО: Инициализируем Store-классы.
             // Заметьте, что trackerStore создается последним,
             // так как он зависит от trackerCategoryStore.
-            self.trackerCategoryStore = TrackerCategoryStore(context: context)
-            self.trackerRecordStore = TrackerRecordStore(context: context)
-            self.trackerStore = TrackerStore(
-                context: context,
-                trackerCategoryStore: self.trackerCategoryStore!
-            )
-            
+                        
             window = UIWindow(windowScene: windowScene)
             
-            let tabBarController = TabBarViewController(
-                trackerStore: self.trackerStore!,
-                trackerCategoryStore: self.trackerCategoryStore!,
-                trackerRecordStore: self.trackerRecordStore!
-            )
+            let tabBarController = TabBarViewController()
             
             window?.rootViewController = tabBarController
             window?.makeKeyAndVisible()

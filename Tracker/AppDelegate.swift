@@ -7,19 +7,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //    var window: UIWindow?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
-//        let tabBarController = TabBarViewController(
-//            trackerStore: trackerStore,
-//            trackerCategoryStore: trackerCategoryStore,
-//            trackerRecordStore: trackerRecordStore
-//        )
-//        window = UIWindow()
-//        window?.rootViewController = tabBarController
-//        window?.makeKeyAndVisible()
-        
-        //        ValueTransformer.setValueTransformer(UIColorValueTransformer(), forName: NSValueTransformerName("UIColorValueTransformer"))
-        //        ValueTransformer.setValueTransformer(WeekdaySetTransformer(), forName: NSValueTransformerName("WeekdaySetTransformer"))
-        
         return true
     }
     
@@ -50,11 +37,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //    lazy var trackerCategoryStore: TrackerCategoryStore = {
 //        return TrackerCategoryStore(context: persistentContainer.viewContext)
 //    }()
-//    
+//
 //    lazy var trackerRecordStore: TrackerRecordStore = {
 //        return TrackerRecordStore(context: persistentContainer.viewContext)
 //    }()
-//    
+//
 //    lazy var trackerStore: TrackerStore = {
 //        return TrackerStore(
 //            context: persistentContainer.viewContext,

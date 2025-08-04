@@ -1,72 +1,119 @@
-import Foundation
+import UIKit
 import CoreData
 
-protocol TrackerCategoryStoreDelegate: AnyObject {
-    func didUpdate()
-}
-
 protocol TrackerCategoryStoreProtocol {
-    var numberOfSections: Int { get }
-    func numberOfRowsInSection(_ section: Int) -> Int
-    func getCategoryName(at indexPath: IndexPath) -> String?
-    func fetchCategories() throws
-    func createCategory(name: String) throws
-    func getCategoryCoreData(with name: String) throws -> TrackerCategoryCoreData?
-    var delegate: TrackerCategoryStoreDelegate? { get set }
+    var categories: [TrackerCategory] { get }
+    func createCategory(_ trackerCategory: TrackerCategory)
+    func addTrackerToCategory(tracker: Tracker, category: String)
+    func deleteCategory(_ category: String)
 }
 
 final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol {
     private let context: NSManagedObjectContext
-    private lazy var fetchedResultsController : NSFetchedResultsController<TrackerCategoryCoreData> = {
-        let request = TrackerCategoryCoreData.fetchRequest()
-        request.sortDescriptors = [NSSortDescriptor(key: #keyPath(TrackerCategoryCoreData.name), ascending: true)]
-        let controller = NSFetchedResultsController(fetchRequest: request, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
-        controller.delegate = self
-        return controller
+    private let appDelegate: AppDelegate
+    private let trackerStore: TrackerStoreProtocol
+    private lazy var fetchedResultsController: NSFetchedResultsController<TrackerCategoryCoreData> = {
+        let fetchRequest = TrackerCategoryCoreData.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \TrackerCategoryCoreData.name,
+                                                         ascending: true)]
+        
+        let fetchedResultsController = NSFetchedResultsController(
+            fetchRequest: fetchRequest,
+            managedObjectContext: context,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        )
+//        fetchedResultsController.delegate = self
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            print("Error fetching TrackerCategoryCoreData: \(error)")
+        }
+        
+        return fetchedResultsController
     }()
     
-    weak var delegate: TrackerCategoryStoreDelegate?
+    var categories: [TrackerCategory] {
+        guard let categoriesCoreData = fetchedResultsController.fetchedObjects else { return [] }
+        return categoriesCoreData.compactMap { getCategory(from: $0)}
+    }
     
-    init(context: NSManagedObjectContext) {
+    init(context: NSManagedObjectContext, appDelegate: AppDelegate, trackerStore: TrackerStoreProtocol) {
         self.context = context
+        self.appDelegate = appDelegate
+        self.trackerStore = trackerStore
         super.init()
     }
     
-    //MARK: Protocol methods
-    var numberOfSections: Int {
-        return fetchedResultsController.sections?.count ?? 0
+    convenience init(trackerStore: TrackerStoreProtocol) {
+        guard let appDelegate = (UIApplication.shared.delegate as? AppDelegate)
+        else {
+            assertionFailure("AppDelegate not found")
+            self.init(trackerStore: trackerStore)
+            return
+        }
+        
+        self.init(
+            context: appDelegate.persistentContainer.viewContext,
+            appDelegate: appDelegate,
+            trackerStore: trackerStore
+        )
     }
-    
-    func numberOfRowsInSection(_ section: Int) -> Int {
-        return fetchedResultsController.sections?[section].numberOfObjects ?? 0
-    }
-    
-    func getCategoryName(at indexPath: IndexPath) -> String? {
-        fetchedResultsController.object(at: indexPath).name
-    }
-    
-    func fetchCategories() throws {
-        try fetchedResultsController.performFetch()
-    }
-    
-    func createCategory(name: String) throws {
-        let categoryCoreData = TrackerCategoryCoreData(context: context)
-        categoryCoreData.id = UUID()
-        categoryCoreData.name = name
-        try context.save()
-    }
-    
-    func getCategoryCoreData(with name: String) throws -> TrackerCategoryCoreData? {
-        let request = TrackerCategoryCoreData.fetchRequest()
-        request.predicate = NSPredicate(format: "name == %@", name)
-        request.fetchLimit = 1
-        let result = try context.fetch(request)
-        return result.first
-    }
-}
 
-extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        delegate?.didUpdate()
+    //MARK: Protocol methods
+    func createCategory(_ trackerCategory: TrackerCategory) {
+        let categoryCoreData = TrackerCategoryCoreData(context: context)
+        categoryCoreData.name = trackerCategory.category
+        categoryCoreData.trackers = NSSet(array: trackerCategory.trackers)
+        appDelegate.saveContext()
+    }
+    
+    func addTrackerToCategory(tracker: Tracker, category: String) {
+        print(#function)
+        let trackerCoreData = trackerStore.createTracker(with: tracker)
+        trackerCoreData.lastCategory = category
+        guard
+            let category = getCategoryCoreData(from: category),
+            let trackers = category.trackers as? Set<TrackerCoreData>
+        else {
+            let newCategory = TrackerCategoryCoreData(context: context)
+            newCategory.name = category
+            newCategory.trackers = NSSet(array: [trackerCoreData])
+            appDelegate.saveContext()
+            return
+        }
+        category.trackers = trackers.union([trackerCoreData]) as NSSet
+        appDelegate.saveContext()
+    }
+    
+    func deleteCategory(_ category: String) {
+        guard let trackerCategoryCoreData = getCategoryCoreData(from: category) else { return }
+        context.delete(trackerCategoryCoreData)
+        appDelegate.saveContext()
+    }
+    
+    //MARK: - private methods
+    
+    private func getCategory(from categoryCoreData: TrackerCategoryCoreData) -> TrackerCategory? {
+        guard
+            let name = categoryCoreData.name,
+            let trackers = categoryCoreData.trackers as? Set<TrackerCoreData>
+        else { return nil }
+        
+        return TrackerCategory(
+            category: name,
+            trackers: trackers.compactMap { trackerStore.getTracker(from: $0) }
+        )
+    }
+    
+    private func getCategoryCoreData(from category: String) -> TrackerCategoryCoreData? {
+        let request = fetchedResultsController.fetchRequest
+        request.predicate = NSPredicate(format: "name == %@", category as CVarArg)
+        do {
+            return try context.fetch(request).first
+        } catch {
+            print("Error fetching TrackerCategoryCoreData: \(error)")
+            return nil
+        }
     }
 }
