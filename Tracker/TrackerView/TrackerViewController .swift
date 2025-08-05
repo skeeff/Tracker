@@ -29,7 +29,7 @@ final class TrackerViewController: UIViewController{
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         let collectionView = UICollectionView(frame: .zero,
-                                          collectionViewLayout: layout)
+                                              collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -66,7 +66,7 @@ final class TrackerViewController: UIViewController{
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-
+    
     
     private lazy var searchField: UISearchController = {
         let temporarySearchField = UISearchController()
@@ -107,7 +107,7 @@ final class TrackerViewController: UIViewController{
             }
         }
     }
-
+    
     private func setupUI(){
         
         view.addSubview(placeholderLabel)
@@ -215,7 +215,7 @@ final class TrackerViewController: UIViewController{
 }
 // MARK: Extensions
 extension TrackerViewController:  UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-        
+    
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -273,7 +273,7 @@ extension TrackerViewController:  UICollectionViewDataSource, UICollectionViewDe
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         referenceSizeForHeaderInSection section: Int) -> CGSize {
-
+        
         let indexPath = IndexPath(row: 0, section: section)
         let header: UICollectionReusableView
         
@@ -281,19 +281,19 @@ extension TrackerViewController:  UICollectionViewDataSource, UICollectionViewDe
             return CGSize(width: collectionView.bounds.width - 56, height: 18)
         } else {
             header = self.collectionView(
-                                         collectionView,
-                                         viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader,
-                                         at: indexPath
-                                         )
+                collectionView,
+                viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader,
+                at: indexPath
+            )
         }
         
-
+        
         
         return header.systemLayoutSizeFitting(CGSize(
             width: collectionView.frame.width,
             height: UIView.layoutFittingExpandedSize.height),
-            withHorizontalFittingPriority: .required,
-            verticalFittingPriority: .fittingSizeLevel)
+                                              withHorizontalFittingPriority: .required,
+                                              verticalFittingPriority: .fittingSizeLevel)
     }
     
     func collectionView(_ collectionView: UICollectionView,
@@ -315,10 +315,37 @@ extension TrackerViewController:  UICollectionViewDataSource, UICollectionViewDe
 extension TrackerViewController: TrackerCellDelegate {
     
     func toggleCompleteButton(isCompleted: Bool, for trackerID: UUID, completion: @escaping () -> Void) {
+        // 1. Проверяем, что дата не в будущем
+        guard currentDate <= Date() else {
+            return
+        }
+
+        if isCompleted {
+            dataProvider.deleteRecord(forTrackerID: trackerID, date: currentDate)
+        } else {
+            dataProvider.addRecord(forTrackerID: trackerID, date: currentDate)
+        }
+        
+        reloadData()
+        completion()
         
     }
+    private func reloadData() {
+        dataProvider.getCategories() { [weak self] in
+            guard let self else { return }
+            DispatchQueue.main.async {
+                self.categories = self.dataProvider.categories
+                // ✅ ВАЖНО: Обновляем `completedRecords`
+                self.completedRecords = self.dataProvider.getCompletedRecords()
+                self.filterTrackersBySelectedDate(self.datePicker)
+                self.collectionView.reloadData()
+                self.updatePlaceholderVisibility()
+                print("ALL \(self.categories)")
+                print("VISIBLE \(self.visibleCategories)")
+            }
+        }
+    }
 }
-
 extension TrackerViewController: HabbitCreatorProtocol {
     func didCreateTracker(_ tracker: Tracker, in categoryName: String) {
         dataProvider.addTrackertoCategory(tracker, categoryName)

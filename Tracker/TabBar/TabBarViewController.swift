@@ -19,7 +19,9 @@ final class TabBarViewController: UITabBarController {
             trackerStore: trackerStore
         )
         
-        let dataProvider = DataProvider(categoryStore: trackerCategoryStore, trackerStore: trackerStore)
+        let trackerRecordStore = TrackerRecordStore(context: context)
+        
+        let dataProvider = DataProvider(categoryStore: trackerCategoryStore, trackerStore: trackerStore, recordStore: trackerRecordStore)
         
         let trackerVC = TrackerViewController(dataProvider: dataProvider)
         trackerVC.tabBarItem = UITabBarItem(title: "Трекеры", image: UIImage(named: "tracker_tab_inactive"), selectedImage: UIImage(named: "tracker_tab_inactive")?.withTintColor(.systemBlue))
