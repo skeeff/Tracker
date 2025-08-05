@@ -1,17 +1,24 @@
 import Foundation
 import CoreData
 
+protocol TrackerRecordDelegate: AnyObject {
+    func didUpdateRecord()
+}
+
 protocol TrackerRecordStoreProtocol {
     func addRecord(forTrackerID trackerID: UUID, date: Date) throws
     func removeRecord(forTrackerID trackerID: UUID, date: Date) throws
     func isTrackerCompletedToday(trackerID: UUID, date: Date) throws -> Bool
     func getCompletedCount(forTrackerID trackerID: UUID) throws -> Int
     func getCompletedRecords() throws -> Set<TrackerRecord>
+    var delegate: TrackerRecordDelegate? { get set }
 }
 
 final class TrackerRecordStore: NSObject, TrackerRecordStoreProtocol {
     
     private let context : NSManagedObjectContext
+    
+    weak var delegate: TrackerRecordDelegate?
     
     init(context: NSManagedObjectContext) {
         self.context = context
@@ -29,6 +36,7 @@ final class TrackerRecordStore: NSObject, TrackerRecordStoreProtocol {
             recordCoreData.date = date
             recordCoreData.trackerOwner = tracker // ✅ Привязываем запись к трекеру
             try context.save()
+            delegate?.didUpdateRecord()
         }
         
     }
@@ -44,6 +52,7 @@ final class TrackerRecordStore: NSObject, TrackerRecordStoreProtocol {
         if let recordToDelete = records.first {
             context.delete(recordToDelete)
             try context.save()
+            delegate?.didUpdateRecord()
         }
         
     }

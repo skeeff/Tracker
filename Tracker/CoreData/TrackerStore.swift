@@ -1,12 +1,17 @@
 import UIKit
 import CoreData
 
+protocol TrackerStoreDelegate: AnyObject {
+    func didUpdateTracker()
+}
+
 protocol TrackerStoreProtocol {
     func getTracker(from trackerCoreData: TrackerCoreData) -> Tracker?
     func getTrackerCoreData(from tracker: Tracker) -> TrackerCoreData
     func getTrackerFromCoreDataById(_ id: UUID) -> TrackerCoreData?
     func createTracker(with tracker: Tracker) -> TrackerCoreData
     func deleteTracker(_ tracker: Tracker)
+    var delegate: TrackerStoreDelegate? { get set }
 }
 
 final class TrackerStore: NSObject, TrackerStoreProtocol {
@@ -14,6 +19,8 @@ final class TrackerStore: NSObject, TrackerStoreProtocol {
     private let context: NSManagedObjectContext
     private let appDelegate: AppDelegate
     private let uiColorMarshalling = UIColorMarshalling.shared
+    
+    weak var delegate: TrackerStoreDelegate?
     
     init(context: NSManagedObjectContext, appDelegate: AppDelegate) {
         self.context = context
@@ -69,13 +76,9 @@ final class TrackerStore: NSObject, TrackerStoreProtocol {
         trackerCoreData.id = tracker.id
         trackerCoreData.name = tracker.name
         trackerCoreData.emoji = tracker.emoji
-        
-        // ✅ Присваиваем значения через обертки
+
         trackerCoreData.color = uiColorMarshalling.hexString(from: tracker.color)
         trackerCoreData.schedule = tracker.schedule as NSObject
-        
-        // ✅ Сохраняем расписание в виде массива Int для фильтрации
-        //        trackerCoreData.scheduleInts = Array(schedule.map { $0.rawValue }) as NSArray
         
         return trackerCoreData
     }
@@ -84,6 +87,7 @@ final class TrackerStore: NSObject, TrackerStoreProtocol {
         guard let trackerCoreData = getTrackerFromCoreDataById(tracker.id) else { return }
         context.delete(trackerCoreData)
         appDelegate.saveContext()
+        delegate?.didUpdateTracker()
     }
     
 }

@@ -94,6 +94,7 @@ final class TrackerViewController: UIViewController{
         super.viewDidLoad()
         setupNavigationController()
         setupUI()
+        setupInitialData()
         
         dataProvider.getCategories() { [weak self] in
             guard let self else { return }
@@ -188,6 +189,14 @@ final class TrackerViewController: UIViewController{
             }
         }
         self.visibleCategories = visibleCategories
+    }
+    
+    private func setupInitialData(){
+        self.categories = dataProvider.categories
+        self.completedRecords = dataProvider.getCompletedRecords()
+        self.filterTrackersBySelectedDate(datePicker)
+        self.collectionView.reloadData()
+        self.updatePlaceholderVisibility()
     }
     
     //MARK: objc

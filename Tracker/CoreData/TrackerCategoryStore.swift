@@ -1,8 +1,13 @@
 import UIKit
 import CoreData
 
+protocol TrackerCategoryStoreDelegate: AnyObject {
+    func didUpdateCategory()
+}
+
 protocol TrackerCategoryStoreProtocol {
     var categories: [TrackerCategory] { get }
+    var delegate: TrackerCategoryStoreDelegate? { get set }
     func createCategory(_ trackerCategory: TrackerCategory)
     func addTrackerToCategory(tracker: Tracker, category: String)
     func deleteCategory(_ category: String)
@@ -12,6 +17,9 @@ final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol {
     private let context: NSManagedObjectContext
     private let appDelegate: AppDelegate
     private let trackerStore: TrackerStoreProtocol
+    
+    weak var delegate: TrackerCategoryStoreDelegate?
+    
     private lazy var fetchedResultsController: NSFetchedResultsController<TrackerCategoryCoreData> = {
         let fetchRequest = TrackerCategoryCoreData.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \TrackerCategoryCoreData.name,
@@ -66,6 +74,7 @@ final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol {
         categoryCoreData.name = trackerCategory.category
         categoryCoreData.trackers = NSSet(array: trackerCategory.trackers)
         appDelegate.saveContext()
+        delegate?.didUpdateCategory()
     }
     
     func addTrackerToCategory(tracker: Tracker, category: String) {
@@ -84,12 +93,14 @@ final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol {
         }
         category.trackers = trackers.union([trackerCoreData]) as NSSet
         appDelegate.saveContext()
+        delegate?.didUpdateCategory()
     }
     
     func deleteCategory(_ category: String) {
         guard let trackerCategoryCoreData = getCategoryCoreData(from: category) else { return }
         context.delete(trackerCategoryCoreData)
         appDelegate.saveContext()
+        delegate?.didUpdateCategory()
     }
     
     //MARK: - private methods

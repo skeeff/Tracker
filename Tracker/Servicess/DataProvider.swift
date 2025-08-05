@@ -1,7 +1,12 @@
 import Foundation
 
+protocol DataProviderDelegate: AnyObject {
+    func didUpdate()
+}
+
 protocol DataProviderProtocol: AnyObject {
     var categories: [TrackerCategory] { get }
+    var delegate: DataProviderDelegate? { get set }
     func getCategories(callback: @escaping () -> Void)
     func addCategory(_ category: TrackerCategory)
     func addTrackertoCategory(_ traker: Tracker, _ category: String)
@@ -14,13 +19,15 @@ protocol DataProviderProtocol: AnyObject {
     func getCompletedRecords() -> Set<TrackerRecord>
 }
 
-final class DataProvider: DataProviderProtocol {
+
+final class DataProvider: NSObject, DataProviderProtocol {
     
-    private let categoryStore: TrackerCategoryStoreProtocol
-    private let trackerStore: TrackerStoreProtocol
-    private let recordStore: TrackerRecordStoreProtocol
+    private var categoryStore: TrackerCategoryStoreProtocol
+    private var trackerStore: TrackerStoreProtocol
+    private var recordStore: TrackerRecordStoreProtocol
     
     private(set) var categories: [TrackerCategory] = []
+    weak var delegate: DataProviderDelegate?
     
     init(
         categoryStore: TrackerCategoryStoreProtocol,
@@ -32,6 +39,11 @@ final class DataProvider: DataProviderProtocol {
         self.recordStore = recordStore
         
         self.categories = categoryStore.categories
+        
+        super.init()
+        self.categoryStore.delegate = self
+        self.trackerStore.delegate = self
+        self.recordStore.delegate = self
     }
     
     func getCategories(callback: @escaping () -> Void) {
@@ -96,4 +108,28 @@ final class DataProvider: DataProviderProtocol {
                 return []
             }
         }
+}
+
+extension DataProvider: TrackerCategoryStoreDelegate {
+    func didUpdateCategory() {
+        self.getCategories { [weak self] in
+            self?.delegate?.didUpdate()
+        }
+    }
+}
+
+extension DataProvider: TrackerStoreDelegate {
+    func didUpdateTracker() {
+        self.getCategories { [weak self] in
+            self?.delegate?.didUpdate()
+        }
+    }
+}
+
+extension DataProvider: TrackerRecordDelegate {
+    func didUpdateRecord() {
+        self.getCategories { [weak self] in
+            self?.delegate?.didUpdate()
+        }
+    }
 }
