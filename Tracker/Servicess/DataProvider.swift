@@ -1,3 +1,4 @@
+
 import Foundation
 
 protocol DataProviderDelegate: AnyObject {
@@ -18,7 +19,6 @@ protocol DataProviderProtocol: AnyObject {
     func isTrackerCompletedToday(trackerID: UUID, date: Date) -> Bool
     func getCompletedRecords() -> Set<TrackerRecord>
 }
-
 
 final class DataProvider: NSObject, DataProviderProtocol {
     
@@ -82,7 +82,7 @@ final class DataProvider: NSObject, DataProviderProtocol {
             print("Ошибка при удалении записи: \(error)")
         }
     }
-        
+    
     func getCompletedCount(for trackerID: UUID) -> Int {
         do {
             return try recordStore.getCompletedCount(forTrackerID: trackerID)
@@ -93,21 +93,22 @@ final class DataProvider: NSObject, DataProviderProtocol {
     }
     
     func isTrackerCompletedToday(trackerID: UUID, date: Date) -> Bool {
-           do {
-               return try recordStore.isTrackerCompletedToday(trackerID: trackerID, date: date)
-           } catch {
-               print("Ошибка при проверке завершенности: \(error)")
-               return false
-           }
-       }
-    func getCompletedRecords() -> Set<TrackerRecord> {
-            do {
-                return try recordStore.getCompletedRecords()
-            } catch {
-                print("Ошибка при получении всех записей: \(error)")
-                return []
-            }
+        do {
+            return try recordStore.isTrackerCompletedToday(trackerID: trackerID, date: date)
+        } catch {
+            print("Ошибка при проверке завершенности: \(error)")
+            return false
         }
+    }
+    
+    func getCompletedRecords() -> Set<TrackerRecord> {
+        do {
+            return try recordStore.getCompletedRecords()
+        } catch {
+            print("Ошибка при получении всех записей: \(error)")
+            return []
+        }
+    }
 }
 
 extension DataProvider: TrackerCategoryStoreDelegate {

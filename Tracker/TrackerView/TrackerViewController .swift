@@ -95,6 +95,7 @@ final class TrackerViewController: UIViewController{
         setupNavigationController()
         setupUI()
         setupInitialData()
+        dataProvider.delegate = self
         
         dataProvider.getCategories() { [weak self] in
             guard let self else { return }
@@ -328,7 +329,7 @@ extension TrackerViewController: TrackerCellDelegate {
         guard currentDate <= Date() else {
             return
         }
-
+        
         if isCompleted {
             dataProvider.deleteRecord(forTrackerID: trackerID, date: currentDate)
         } else {
@@ -344,7 +345,7 @@ extension TrackerViewController: TrackerCellDelegate {
             guard let self else { return }
             DispatchQueue.main.async {
                 self.categories = self.dataProvider.categories
-                // ✅ ВАЖНО: Обновляем `completedRecords`
+
                 self.completedRecords = self.dataProvider.getCompletedRecords()
                 self.filterTrackersBySelectedDate(self.datePicker)
                 self.collectionView.reloadData()
@@ -358,15 +359,21 @@ extension TrackerViewController: TrackerCellDelegate {
 extension TrackerViewController: HabbitCreatorProtocol {
     func didCreateTracker(_ tracker: Tracker, in categoryName: String) {
         dataProvider.addTrackertoCategory(tracker, categoryName)
-        
-        dataProvider.getCategories() { [weak self] in
-            guard let self else { return }
-            DispatchQueue.main.async {
-                self.categories = self.dataProvider.categories
-                self.filterTrackersBySelectedDate(self.datePicker)
-                self.collectionView.reloadData()
-            }
-        }
+        reloadData()
+//        dataProvider.getCategories() { [weak self] in
+//            guard let self else { return }
+//            DispatchQueue.main.async {
+//                self.categories = self.dataProvider.categories
+//                self.filterTrackersBySelectedDate(self.datePicker)
+//                self.collectionView.reloadData()
+//            }
+//        }
+    }
+}
+
+extension TrackerViewController: DataProviderDelegate {
+    func didUpdate() {
+        reloadData()
     }
 }
 

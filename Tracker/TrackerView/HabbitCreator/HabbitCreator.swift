@@ -248,13 +248,14 @@ final class HabbitCreatorViewController: UIViewController {
     @objc private func createButtonTapped(){
         let trackerName = textField.text ?? ""
         guard let selectedEmoji else { return }
-        guard let randomColor = AppResources.trackerColors.randomElement() else { return }
+        guard let selectedColor else { return }
+//        guard let randomColor = AppResources.trackerColors.randomElement() else { return }
         
         if !trackerName.isEmpty && !selectedCategory.isEmpty && !selectedSchedule.isEmpty {
             let newTracker = Tracker(id: UUID(),
                                      name: trackerName,
                                      emoji: selectedEmoji,
-                                     color: randomColor,
+                                     color: selectedColor,
                                      schedule: Array(self.selectedSchedule))
             
             delegate?.didCreateTracker(newTracker, in: selectedCategory)

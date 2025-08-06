@@ -5,7 +5,7 @@ protocol TrackerCategoryStoreDelegate: AnyObject {
     func didUpdateCategory()
 }
 
-protocol TrackerCategoryStoreProtocol {
+protocol TrackerCategoryStoreProtocol: AnyObject {
     var categories: [TrackerCategory] { get }
     var delegate: TrackerCategoryStoreDelegate? { get set }
     func createCategory(_ trackerCategory: TrackerCategory)
@@ -13,7 +13,7 @@ protocol TrackerCategoryStoreProtocol {
     func deleteCategory(_ category: String)
 }
 
-final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol {
+final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol, NSFetchedResultsControllerDelegate {
     private let context: NSManagedObjectContext
     private let appDelegate: AppDelegate
     private let trackerStore: TrackerStoreProtocol
@@ -31,7 +31,7 @@ final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol {
             sectionNameKeyPath: nil,
             cacheName: nil
         )
-//        fetchedResultsController.delegate = self
+        fetchedResultsController.delegate = self
         do {
             try fetchedResultsController.performFetch()
         } catch {
@@ -67,39 +67,59 @@ final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol {
             trackerStore: trackerStore
         )
     }
-
+    
     //MARK: Protocol methods
     func createCategory(_ trackerCategory: TrackerCategory) {
         let categoryCoreData = TrackerCategoryCoreData(context: context)
         categoryCoreData.name = trackerCategory.category
-        categoryCoreData.trackers = NSSet(array: trackerCategory.trackers)
+        //        categoryCoreData.trackers = NSSet(array: trackerCategory.trackers)
         appDelegate.saveContext()
         delegate?.didUpdateCategory()
     }
     
     func addTrackerToCategory(tracker: Tracker, category: String) {
         print(#function)
+        
         let trackerCoreData = trackerStore.createTracker(with: tracker)
-        trackerCoreData.lastCategory = category
-        guard
-            let category = getCategoryCoreData(from: category),
-            let trackers = category.trackers as? Set<TrackerCoreData>
-        else {
+        
+        // Находим или создаем категорию
+        let categoryCoreData = getCategoryCoreData(from: category) ?? {
             let newCategory = TrackerCategoryCoreData(context: context)
             newCategory.name = category
-            newCategory.trackers = NSSet(array: [trackerCoreData])
-            appDelegate.saveContext()
-            return
-        }
-        category.trackers = trackers.union([trackerCoreData]) as NSSet
+            return newCategory
+        }()
+        
+        // Связываем трекер с категорией
+        trackerCoreData.category = categoryCoreData
+        
         appDelegate.saveContext()
         delegate?.didUpdateCategory()
+        //        print(#function)
+        //        let trackerCoreData = trackerStore.createTracker(with: tracker)
+        //        trackerCoreData.lastCategory = category
+        //        guard
+        //            let category = getCategoryCoreData(from: category),
+        //            let trackers = category.trackers as? Set<TrackerCoreData>
+        //        else {
+        //            let newCategory = TrackerCategoryCoreData(context: context)
+        //            newCategory.name = category
+        //            newCategory.trackers = NSSet(array: [trackerCoreData])
+        //            appDelegate.saveContext()
+        //            return
+        //        }
+        //        category.trackers = trackers.union([trackerCoreData]) as NSSet
+        //        appDelegate.saveContext()
+        //        delegate?.didUpdateCategory()
     }
     
     func deleteCategory(_ category: String) {
         guard let trackerCategoryCoreData = getCategoryCoreData(from: category) else { return }
         context.delete(trackerCategoryCoreData)
         appDelegate.saveContext()
+        delegate?.didUpdateCategory()
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         delegate?.didUpdateCategory()
     }
     

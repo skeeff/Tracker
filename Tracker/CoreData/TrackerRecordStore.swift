@@ -73,7 +73,7 @@ final class TrackerRecordStore: NSObject, TrackerRecordStoreProtocol {
         request.predicate = NSPredicate(format: "trackerOwner.id == %@", trackerID as CVarArg)
         
         return try context.count(for: request)
-
+        
     }
     func getCompletedRecords() throws -> Set<TrackerRecord> {
         let request: NSFetchRequest<TrackerRecordCoreData> = TrackerRecordCoreData.fetchRequest()

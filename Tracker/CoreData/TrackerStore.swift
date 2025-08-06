@@ -49,6 +49,9 @@ final class TrackerStore: NSObject, TrackerStoreProtocol {
     }
     
     func getTrackerCoreData(from tracker: Tracker) -> TrackerCoreData {
+        if let existingTracker = getTrackerFromCoreDataById(tracker.id) {
+            return existingTracker
+        }
         let trackerCoreData = TrackerCoreData(context: context)
         trackerCoreData.id = tracker.id
         trackerCoreData.name = tracker.name
@@ -76,7 +79,7 @@ final class TrackerStore: NSObject, TrackerStoreProtocol {
         trackerCoreData.id = tracker.id
         trackerCoreData.name = tracker.name
         trackerCoreData.emoji = tracker.emoji
-
+        
         trackerCoreData.color = uiColorMarshalling.hexString(from: tracker.color)
         trackerCoreData.schedule = tracker.schedule as NSObject
         
