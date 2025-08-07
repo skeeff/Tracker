@@ -17,7 +17,7 @@ struct AppResources {
         UIColor(resource: .ypLightPink),
         UIColor(resource: .ypLightPurple),
         UIColor(resource: .ypLightViolet),
-        UIColor(resource: .ypMint),
+        UIColor(resource: .ypMintGreen),
         UIColor(resource: .ypOrange),
         UIColor(resource: .ypPastelViolet),
         UIColor(resource: .ypPink),
