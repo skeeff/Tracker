@@ -17,9 +17,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
             let context = appDelegate.persistentContainer.viewContext
             
-            // ✅ ИСПРАВЛЕНО: Инициализируем Store-классы.
-            // Заметьте, что trackerStore создается последним,
-            // так как он зависит от trackerCategoryStore.
                         
             window = UIWindow(windowScene: windowScene)
             

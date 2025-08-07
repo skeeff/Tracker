@@ -116,6 +116,8 @@ final class HabbitCreatorViewController: UIViewController {
         return view
     }()
     
+    private lazy var scheduleVC = ScheduleViewController()
+    
     private let options = ["Категория", "Расписание"]
     private var selectedCategory: String = ""
     private var selectedSchedule: Set<Weekday> = []
@@ -364,10 +366,9 @@ extension HabbitCreatorViewController: UITableViewDataSource, UITableViewDelegat
             self.selectedCategory = "Мои трекеры"
             tableView.reloadRows(at: [indexPath], with: .automatic)
             updateCreateButtonState()
-        } else if indexPath.row == 1 { // Расписание
-            let scheduleViewController = ScheduleViewController()
-            scheduleViewController.delegate = self
-            present(scheduleViewController, animated: true, completion: nil)
+        } else if indexPath.row == 1 { 
+            scheduleVC.delegate = self
+            present(scheduleVC, animated: true, completion: nil)
         }
     }
 }
