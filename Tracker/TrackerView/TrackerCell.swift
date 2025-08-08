@@ -1,8 +1,7 @@
 import UIKit
 
 protocol TrackerCellDelegate: AnyObject {
-    func didTapAddButton(for trackerID: UUID)
-    func didTapRemoveButton(for trackerID: UUID)
+    func toggleCompleteButton(isCompleted: Bool, for trackerID: UUID, completion: @escaping () -> Void)
 }
 
 final class TrackerCell: UICollectionViewCell {
@@ -13,11 +12,13 @@ final class TrackerCell: UICollectionViewCell {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.textColor = .white
+        label.numberOfLines = 2
+        label.lineBreakMode = .byTruncatingTail
         return label
     }()
     private lazy var emojiLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 24, weight: .medium)
+        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.textColor = .white
         return label
     }()
@@ -72,14 +73,14 @@ final class TrackerCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with tracker: Tracker, isCompletedForSelectedDate: Bool, daysCompleted: Int, isInteractionAllowed: Bool){
+    func configure(with tracker: Tracker, isCompletedForSelectedDate: Bool, daysCompleted: Int) {
         self.trackerID = tracker.id
         self.isCurrentlyCompleted = isCompletedForSelectedDate
         
         trackerLabel.text = tracker.name
         emojiLabel.text = tracker.emoji
-        cardView.backgroundColor = tracker.color.uiColor
-        addButton.backgroundColor = tracker.color.uiColor
+        cardView.backgroundColor = tracker.color
+        addButton.backgroundColor = tracker.color
         
         
         if isCompletedForSelectedDate {
@@ -92,7 +93,7 @@ final class TrackerCell: UICollectionViewCell {
             addButton.setTitle(nil, for: .normal)
         }
         
-        addButton.isUserInteractionEnabled = isInteractionAllowed
+//        addButton.isUserInteractionEnabled = isInteractionAllowed
         quantityLabel.text = formatDaysString(daysCompleted)
     }
     
@@ -118,6 +119,7 @@ final class TrackerCell: UICollectionViewCell {
             cardView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -58),
             trackerLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 12),
             trackerLabel.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -12),
+            trackerLabel.widthAnchor.constraint(lessThanOrEqualToConstant: 143),
             emojiBackgroundView.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 12),
             emojiBackgroundView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 12),
             emojiBackgroundView.widthAnchor.constraint(equalToConstant: 24),
@@ -136,12 +138,9 @@ final class TrackerCell: UICollectionViewCell {
     
     @objc private func addButtonTapped(){
         guard addButton.isUserInteractionEnabled, let id = trackerID else { return }
+        animateAddButtonTapped()
         
-        if isCurrentlyCompleted {
-            delegate?.didTapRemoveButton(for: id)
-        }else {
-            delegate?.didTapAddButton(for: id)
-        }
+        delegate?.toggleCompleteButton(isCompleted: isCurrentlyCompleted, for: id) { }
     }
     
     private func formatDaysString(_ count: Int) -> String{
@@ -159,18 +158,29 @@ final class TrackerCell: UICollectionViewCell {
         }
     }
     
+    private func animateAddButtonTapped(){
+        UIView.animate(withDuration: 0.1, animations: {
+            self.addButton.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+        }) { _ in
+            UIView.animate(withDuration: 0.1) {
+                self.addButton.transform = CGAffineTransform.identity
+            }
+        }
+
+    }
+    
     override func prepareForReuse() {
-         super.prepareForReuse()
-         trackerLabel.text = nil
-         emojiLabel.text = nil
-         cardView.backgroundColor = nil
-         addButton.backgroundColor = nil
-         addButton.setTitle(nil, for: .normal)
-         addButton.setImage(nil, for: .normal)
-         addButton.alpha = 1.0
-         addButton.isUserInteractionEnabled = true
-         quantityLabel.text = nil
-         trackerID = nil
-         isCurrentlyCompleted = false
-     }
+        super.prepareForReuse()
+        trackerLabel.text = nil
+        emojiLabel.text = nil
+        cardView.backgroundColor = nil
+        addButton.backgroundColor = nil
+        addButton.setTitle(nil, for: .normal)
+        addButton.setImage(nil, for: .normal)
+        addButton.alpha = 1.0
+        addButton.isUserInteractionEnabled = true
+        quantityLabel.text = nil
+        trackerID = nil
+        isCurrentlyCompleted = false
+    }
 }
