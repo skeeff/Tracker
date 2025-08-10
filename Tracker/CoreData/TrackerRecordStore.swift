@@ -32,9 +32,9 @@ final class TrackerRecordStore: NSObject, TrackerRecordStoreProtocol {
         let trackers = try context.fetch(fetchRequest)
         if let tracker = trackers.first {
             let recordCoreData = TrackerRecordCoreData(context: context)
-            recordCoreData.id = UUID() // ✅ Генерируем уникальный ID для самой записи
+            recordCoreData.id = UUID()
             recordCoreData.date = date
-            recordCoreData.trackerOwner = tracker // ✅ Привязываем запись к трекеру
+            recordCoreData.trackerOwner = tracker
             try context.save()
             delegate?.didUpdateRecord()
         }

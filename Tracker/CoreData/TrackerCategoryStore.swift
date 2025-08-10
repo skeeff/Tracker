@@ -72,7 +72,6 @@ final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol, NSFetc
     func createCategory(_ trackerCategory: TrackerCategory) {
         let categoryCoreData = TrackerCategoryCoreData(context: context)
         categoryCoreData.name = trackerCategory.category
-        //        categoryCoreData.trackers = NSSet(array: trackerCategory.trackers)
         appDelegate.saveContext()
         delegate?.didUpdateCategory()
     }
@@ -82,34 +81,17 @@ final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol, NSFetc
         
         let trackerCoreData = trackerStore.createTracker(with: tracker)
         
-        // Находим или создаем категорию
         let categoryCoreData = getCategoryCoreData(from: category) ?? {
             let newCategory = TrackerCategoryCoreData(context: context)
             newCategory.name = category
             return newCategory
         }()
         
-        // Связываем трекер с категорией
         trackerCoreData.category = categoryCoreData
         
         appDelegate.saveContext()
         delegate?.didUpdateCategory()
-        //        print(#function)
-        //        let trackerCoreData = trackerStore.createTracker(with: tracker)
-        //        trackerCoreData.lastCategory = category
-        //        guard
-        //            let category = getCategoryCoreData(from: category),
-        //            let trackers = category.trackers as? Set<TrackerCoreData>
-        //        else {
-        //            let newCategory = TrackerCategoryCoreData(context: context)
-        //            newCategory.name = category
-        //            newCategory.trackers = NSSet(array: [trackerCoreData])
-        //            appDelegate.saveContext()
-        //            return
-        //        }
-        //        category.trackers = trackers.union([trackerCoreData]) as NSSet
-        //        appDelegate.saveContext()
-        //        delegate?.didUpdateCategory()
+        delegate?.didUpdateCategory()
     }
     
     func deleteCategory(_ category: String) {

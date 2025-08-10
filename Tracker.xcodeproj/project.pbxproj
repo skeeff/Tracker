@@ -35,6 +35,9 @@
 		4A88B8FC2E41471A006DB110 /* Calendar+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A88B8FB2E41471A006DB110 /* Calendar+Extensions.swift */; };
 		4A88B8FF2E414769006DB110 /* DataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A88B8FE2E414769006DB110 /* DataProvider.swift */; };
 		4ADD836E2DFE042E006E3C1A /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADD836D2DFE03EE006E3C1A /* Tracker.swift */; };
+		4AF286D12E4908E500B133EC /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AF286D02E4908E500B133EC /* OnboardingViewController.swift */; };
+		4AF286D32E4913CF00B133EC /* Flags.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AF286D22E4913C700B133EC /* Flags.swift */; };
+		4AF286D62E49151100B133EC /* OnboardingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AF286D52E49151100B133EC /* OnboardingPageViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -68,6 +71,9 @@
 		4A88B8FB2E41471A006DB110 /* Calendar+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Calendar+Extensions.swift"; sourceTree = "<group>"; };
 		4A88B8FE2E414769006DB110 /* DataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataProvider.swift; sourceTree = "<group>"; };
 		4ADD836D2DFE03EE006E3C1A /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
+		4AF286D02E4908E500B133EC /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
+		4AF286D22E4913C700B133EC /* Flags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flags.swift; sourceTree = "<group>"; };
+		4AF286D52E49151100B133EC /* OnboardingPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +106,7 @@
 		1BCB6DCC2DC8CFDF003E6FD8 /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
+				4AF286D42E4913D800B133EC /* Onboarding */,
 				4A88B8FD2E41474C006DB110 /* Servicess */,
 				4A6315EC2E3A570A00901AED /* CoreData */,
 				4ADD836C2DFE03E3006E3C1A /* Models */,
@@ -191,6 +198,7 @@
 		4A88B8FD2E41474C006DB110 /* Servicess */ = {
 			isa = PBXGroup;
 			children = (
+				4AF286D22E4913C700B133EC /* Flags.swift */,
 				4A88B8FE2E414769006DB110 /* DataProvider.swift */,
 			);
 			path = Servicess;
@@ -203,6 +211,15 @@
 				4ADD836D2DFE03EE006E3C1A /* Tracker.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		4AF286D42E4913D800B133EC /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				4AF286D02E4908E500B133EC /* OnboardingViewController.swift */,
+				4AF286D52E49151100B133EC /* OnboardingPageViewController.swift */,
+			);
+			path = Onboarding;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -284,6 +301,7 @@
 				4A4C01502E25750E00D6E0A0 /* ScheduleCell.swift in Sources */,
 				4A6315F22E3A5CA000901AED /* TrackerRecordStore.swift in Sources */,
 				4A4C014C2E183E4800D6E0A0 /* OptionTableViewCell.swift in Sources */,
+				4AF286D62E49151100B133EC /* OnboardingPageViewController.swift in Sources */,
 				4A01A9972E28005D0055D651 /* AppResources.swift in Sources */,
 				4A01A9992E2816370055D651 /* emojiCollectionCell.swift in Sources */,
 				4A4C01482E18075F00D6E0A0 /* TextFieldExtension.swift in Sources */,
@@ -291,6 +309,7 @@
 				1BCB6DCE2DC8CFDF003E6FD8 /* AppDelegate.swift in Sources */,
 				4A5D5E9D2E086144003BC294 /* DateFormatter.swift in Sources */,
 				4A5D5E9F2E0881BC003BC294 /* TrackerCell.swift in Sources */,
+				4AF286D12E4908E500B133EC /* OnboardingViewController.swift in Sources */,
 				4A6315F02E3A5C9300901AED /* TrackerCategoryStore.swift in Sources */,
 				4A6315EE2E3A5C8600901AED /* TrackerStore.swift in Sources */,
 				1BCB6DEC2DC94BC5003E6FD8 /* StatisticsViewController.swift in Sources */,
@@ -301,6 +320,7 @@
 				1BCB6DD02DC8CFDF003E6FD8 /* SceneDelegate.swift in Sources */,
 				4A88B8FA2E4146FF006DB110 /* DaysValueTransformer.swift in Sources */,
 				4ADD836E2DFE042E006E3C1A /* Tracker.swift in Sources */,
+				4AF286D32E4913CF00B133EC /* Flags.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
