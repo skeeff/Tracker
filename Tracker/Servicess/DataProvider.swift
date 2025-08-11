@@ -55,8 +55,8 @@ final class DataProvider: NSObject, DataProviderProtocol {
         categoryStore.createCategory(category)
     }
     
-    func addTrackertoCategory(_ traker: Tracker, _ category: String) {
-        categoryStore.addTrackerToCategory(tracker: traker, category: category)
+    func addTrackertoCategory(_ tracker: Tracker, _ category: String) {
+        categoryStore.addTrackerToCategory(tracker: tracker, category: category)
     }
     
     func deleteCategory(_ name: String) {
