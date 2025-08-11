@@ -1,10 +1,20 @@
 import UIKit
 
 protocol HabbitCreatorProtocol: AnyObject {
-    func didCreateTracker(_ tracker: Tracker, in category: String)
+    func didCreateTracker()
 }
 
 final class HabbitCreatorViewController: UIViewController {
+    
+    init(dataProvider: DataProviderProtocol) {
+        self.dataProvider = dataProvider
+        self.categoryViewModel = CategoryViewModel(dataProvider: dataProvider)
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
@@ -116,7 +126,9 @@ final class HabbitCreatorViewController: UIViewController {
         return view
     }()
     
+    private let categoryViewModel: CategoryViewModelProtocol
     private lazy var scheduleVC = ScheduleViewController()
+    private lazy var categoryVC = CategoryViewController(viewModel: categoryViewModel)
     
     private let options = ["Категория", "Расписание"]
     private var selectedCategory: String = ""
@@ -125,8 +137,9 @@ final class HabbitCreatorViewController: UIViewController {
     private var selectedColor: UIColor?
     
     private let tableView = UITableView(frame: .zero, style: .insetGrouped)
-    
+
     weak var delegate: HabbitCreatorProtocol?
+    private let dataProvider: DataProviderProtocol
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -136,6 +149,7 @@ final class HabbitCreatorViewController: UIViewController {
         setupColorCollectionView()
         textField.delegate = self
         updateCreateButtonState()
+        categoryViewModel.delegate = self
     }
     
     private func setupUI() {
@@ -251,7 +265,6 @@ final class HabbitCreatorViewController: UIViewController {
         let trackerName = textField.text ?? ""
         guard let selectedEmoji else { return }
         guard let selectedColor else { return }
-//        guard let randomColor = AppResources.trackerColors.randomElement() else { return }
         
         if !trackerName.isEmpty && !selectedCategory.isEmpty && !selectedSchedule.isEmpty {
             let newTracker = Tracker(id: UUID(),
@@ -260,7 +273,8 @@ final class HabbitCreatorViewController: UIViewController {
                                      color: selectedColor,
                                      schedule: Array(self.selectedSchedule))
             
-            delegate?.didCreateTracker(newTracker, in: selectedCategory)
+            dataProvider.addTrackertoCategory(newTracker, selectedCategory)
+            delegate?.didCreateTracker()
             self.dismiss(animated: true)
         } else {
             print("ZAPOLNENO NE VSE")
@@ -332,9 +346,6 @@ extension HabbitCreatorViewController: UITableViewDataSource, UITableViewDelegat
             cell.detailTextLabel?.text = selectedCategory
             cell.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
             cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-            if !selectedCategory.isEmpty {
-                cell.detailTextLabel?.text = selectedCategory
-            }
         } else {
             if selectedSchedule.isEmpty {
                 cell.detailTextLabel?.text = nil
@@ -351,7 +362,6 @@ extension HabbitCreatorViewController: UITableViewDataSource, UITableViewDelegat
         cell.separatorInset = .zero
         cell.layoutMargins = .zero
         
-        
         return cell
     }
     
@@ -362,11 +372,12 @@ extension HabbitCreatorViewController: UITableViewDataSource, UITableViewDelegat
         
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.row == 0 {
-            print("Переход к выбору категории")
-            self.selectedCategory = "Мои трекеры"
+//            print("Переход к выбору категории")
             tableView.reloadRows(at: [indexPath], with: .automatic)
             updateCreateButtonState()
-        } else if indexPath.row == 1 { 
+            let categoryNC = UINavigationController(rootViewController: categoryVC)
+            present(categoryNC, animated: true, completion: nil)
+        } else if indexPath.row == 1 {
             scheduleVC.delegate = self
             present(scheduleVC, animated: true, completion: nil)
         }
@@ -488,3 +499,9 @@ extension HabbitCreatorViewController: UICollectionViewDataSource, UICollectionV
     }
 }
 
+extension HabbitCreatorViewController: CategoryViewModelDelegate {
+    func category(_ category: String) {
+        selectedCategory = category
+        tableView.reloadData()
+    }
+}
