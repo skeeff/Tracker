@@ -504,4 +504,5 @@ extension HabbitCreatorViewController: CategoryViewModelDelegate {
         selectedCategory = category
         tableView.reloadData()
     }
+    
 }

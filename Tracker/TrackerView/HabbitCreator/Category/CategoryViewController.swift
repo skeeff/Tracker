@@ -19,7 +19,7 @@ final class CategoryViewController: UIViewController {
         let tableView = UITableView(frame: .zero, style: .plain)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.separatorStyle = .singleLine
-        tableView.layer.cornerRadius = 16 // Скругляем верхние углы таблицы
+        tableView.layer.cornerRadius = 16 
         tableView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
         tableView.clipsToBounds = true
         tableView.separatorColor = .gray
@@ -68,6 +68,22 @@ final class CategoryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        bindViewModel()
+        viewModel.viewDidLoad()
+    }
+    
+    private func bindViewModel() {
+        // Подписываемся на обновление списка категорий
+        viewModel.onCategoriesUpdate = { [weak self] in
+            DispatchQueue.main.async {
+                self?.tableView.reloadData()
+            }
+        }
+        
+        // Подписываемся на изменение состояния
+        viewModel.onStateChange = { [weak self] in
+            self?.switchUI()
+        }
     }
     
     private func setupUI() {
@@ -134,13 +150,10 @@ final class CategoryViewController: UIViewController {
     
     @objc private func didTapButton() {
         switch viewModel.state {
-        case .onboarding:
-            viewModel.setState(.create) { [weak self] in self?.switchUI() }
+        case .onboarding, .choose:
+            viewModel.didTapAddCategoryButton()
         case .create:
-            viewModel.setState(.choose) { [weak self] in self?.switchUI() }
-            viewModel.didTapDoneButton(textField.text ?? "") { [weak self] in self?.tableView.reloadData() }
-        case .choose:
-            viewModel.setState(.create) { [weak self] in self?.switchUI() }
+            viewModel.didTapDoneButton(with: textField.text ?? "")
         }
     }
     
@@ -151,8 +164,9 @@ final class CategoryViewController: UIViewController {
 
 extension CategoryViewController: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
+        viewModel.didBeginEditing()
+        
         textField.text = ""
-        viewModel.setState(.create) { [weak self] in self?.switchUI() }
         textField.becomeFirstResponder()
     }
     
@@ -170,18 +184,14 @@ extension CategoryViewController: UITextFieldDelegate {
         newCategory = text
         button.backgroundColor = .black
         button.isUserInteractionEnabled = true
+        print(newCategory)
     }
 }
 
 extension CategoryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        viewModel.setSelectedCategory(category: indexPath) { [weak self] in
-            DispatchQueue.main.async {
-                self?.tableView.reloadData()
-            }
-        }
-        
+        viewModel.setSelectedCategory(at: indexPath)
         dismiss(animated: true)
     }
     
@@ -192,32 +202,23 @@ extension CategoryViewController: UITableViewDelegate {
 
 extension CategoryViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard !viewModel.categories().isEmpty else {
-            placeholder.showPlaceholder(
-                image: UIImage(resource: .trackersPlaceholder),
-                text: "Привычки и события можно объединить по смыслу",
-                view: self.view
-            )
-            viewModel.setState(.onboarding) { [weak self] in self?.switchUI() }
+        let count = viewModel.categories().count
+        if count == 0 {
             return 0
         }
-        
-        viewModel.setState(.choose) { [weak self] in self?.switchUI() }
-        placeholder.removePlaceholder()
-        return viewModel.categories().count
+        return count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
         let category = viewModel.categories()[indexPath.row]
-        let isSelected = viewModel.isSelected(indexPath: indexPath)
+        let isSelected = viewModel.isSelected(at: indexPath)
         let isLast = indexPath.row == viewModel.categories().count - 1
         
         cell.textLabel?.text = category.category
         cell.selectionStyle = .none
         cell.backgroundColor = .systemGray6
         
-        // Настройка галочки
         if isSelected {
             cell.accessoryType = .checkmark
         } else {

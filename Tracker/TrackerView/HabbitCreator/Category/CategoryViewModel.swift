@@ -2,14 +2,19 @@ import Foundation
 
 protocol CategoryViewModelProtocol: AnyObject {
     var delegate: CategoryViewModelDelegate? { get set }
+    var onCategoriesUpdate: (() -> Void)? { get set }
+    var onStateChange: (() -> Void)? { get set }
     var state: CategoryVCState { get }
-    func setState(_ state: CategoryVCState, callback: @escaping () -> Void)
+    
     func categories() -> [TrackerCategory]
-    func setSelectedCategory(category: IndexPath, _ callback: @escaping () -> Void)
+    func setSelectedCategory(at indexPath: IndexPath)
     func getSelectedCategory() -> String?
-    func deleteCategory(category: String, _ callback: @escaping () -> Void)
-    func isSelected(indexPath: IndexPath) -> Bool
-    func didTapDoneButton(_ category: String, _ callback: @escaping () -> Void)
+    func deleteCategory(at indexPath: IndexPath)
+    func isSelected(at indexPath: IndexPath) -> Bool
+    func didTapDoneButton(with newCategoryName: String)
+    func didTapAddCategoryButton()
+    func viewDidLoad()
+    func didBeginEditing()
 }
 
 protocol CategoryViewModelDelegate: AnyObject {
@@ -19,7 +24,7 @@ protocol CategoryViewModelDelegate: AnyObject {
 enum CategoryVCState {
     case onboarding
     case create
-    case choose 
+    case choose
 }
 
 final class CategoryViewModel: CategoryViewModelProtocol {
@@ -27,6 +32,7 @@ final class CategoryViewModel: CategoryViewModelProtocol {
     //MARK: Init
     init(dataProvider: DataProviderProtocol) {
         self.dataProvider = dataProvider
+        self.dataProvider?.delegate = self
         
         if !dataProvider.categories.isEmpty {
             self.state = .choose
@@ -39,7 +45,14 @@ final class CategoryViewModel: CategoryViewModelProtocol {
     
     weak var delegate: CategoryViewModelDelegate?
     
-    private(set) var state: CategoryVCState = .onboarding
+    var onCategoriesUpdate: (() -> Void)?
+    var onStateChange: (() -> Void)?
+    
+    private(set) var state: CategoryVCState = .onboarding {
+        didSet{
+            onStateChange?()
+        }
+    }
     private var dataProvider: DataProviderProtocol?
     private var selectedCategory: String?
     
@@ -49,32 +62,58 @@ final class CategoryViewModel: CategoryViewModelProtocol {
         DispatchQueue.main.async(execute: callback)
     }
     
-    func didTapDoneButton(_ category: String, _ callback: @escaping () -> Void) {
-        tryToAddNewCategory(category)
-        callback()
+    func viewDidLoad(){
+        updateState()
     }
     
-    func isSelected(indexPath: IndexPath) -> Bool {
+    func didTapDoneButton(with newCategoryName: String) {
+        if !newCategoryName.isEmpty {
+            if !categories().contains(where: { $0.category == newCategoryName }) {
+                dataProvider?.addCategory(TrackerCategory(category: newCategoryName, trackers: []))
+//                onCategoriesUpdate?()
+            }
+        }
+        selectedCategory = newCategoryName
+        delegate?.category(selectedCategory ?? "")
+        updateState()
+    }
+    
+    func didTapAddCategoryButton() {
+        state = .create
+    }
+    
+    func isSelected(at indexPath: IndexPath) -> Bool {
         categories()[indexPath.row].category == selectedCategory
     }
     
     func categories() -> [TrackerCategory] {
         dataProvider?.categories ?? []
     }
-    
-    func setSelectedCategory(category: IndexPath, _ callback: @escaping () -> Void) {
-        selectedCategory = categories()[category.row].category
-        delegate?.category(selectedCategory ?? "")
-        callback()
-    }
-    
+        
     func getSelectedCategory() -> String? {
         selectedCategory
     }
     
-    func deleteCategory(category: String, _ callback: @escaping () -> Void) {
-        dataProvider?.deleteCategory(category)
-        callback()
+    func setSelectedCategory(at indexPath: IndexPath) {
+        let category = categories()[indexPath.row].category
+        selectedCategory = category
+        delegate?.category(selectedCategory ?? "")
+    }
+    
+    func deleteCategory(at indexPath: IndexPath) {
+        let categoryName = categories()[indexPath.row].category
+        dataProvider?.deleteCategory(categoryName)
+    }
+    func didBeginEditing() {
+        self.state = .create
+    }
+    // MARK: - Private Methods
+    private func updateState() {
+        if categories().isEmpty {
+            state = .onboarding
+        } else {
+            state = .choose
+        }
     }
     
     private func tryToAddNewCategory(_ category: String) {
@@ -86,4 +125,12 @@ final class CategoryViewModel: CategoryViewModelProtocol {
         print("\(#function) view model")
     }
     
+}
+
+// MARK: - DataProviderDelegate
+extension CategoryViewModel: DataProviderDelegate {
+    func didUpdate() {
+        updateState()
+        onCategoriesUpdate?()
+    }
 }
