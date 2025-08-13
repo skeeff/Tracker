@@ -2,7 +2,7 @@ import UIKit
 import CoreData
 
 protocol TrackerCategoryStoreDelegate: AnyObject {
-    func didUpdateCategory()
+    func didUpdateCategories(newCategories: [TrackerCategory])
 }
 
 protocol TrackerCategoryStoreProtocol: AnyObject {
@@ -23,7 +23,7 @@ final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol, NSFetc
     private lazy var fetchedResultsController: NSFetchedResultsController<TrackerCategoryCoreData> = {
         let fetchRequest = TrackerCategoryCoreData.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \TrackerCategoryCoreData.name,
-                                                         ascending: true)]
+                                                        ascending: true)]
         
         let fetchedResultsController = NSFetchedResultsController(
             fetchRequest: fetchRequest,
@@ -56,9 +56,7 @@ final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol, NSFetc
     convenience init(trackerStore: TrackerStoreProtocol) {
         guard let appDelegate = (UIApplication.shared.delegate as? AppDelegate)
         else {
-            assertionFailure("AppDelegate not found")
-            self.init(trackerStore: trackerStore)
-            return
+            fatalError("AppDelegate not found")
         }
         
         self.init(
@@ -73,7 +71,6 @@ final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol, NSFetc
         let categoryCoreData = TrackerCategoryCoreData(context: context)
         categoryCoreData.name = trackerCategory.category
         appDelegate.saveContext()
-        delegate?.didUpdateCategory()
     }
     
     func addTrackerToCategory(tracker: Tracker, category: String) {
@@ -90,19 +87,17 @@ final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol, NSFetc
         trackerCoreData.category = categoryCoreData
         
         appDelegate.saveContext()
-        delegate?.didUpdateCategory()
-        delegate?.didUpdateCategory()
     }
     
     func deleteCategory(_ category: String) {
         guard let trackerCategoryCoreData = getCategoryCoreData(from: category) else { return }
         context.delete(trackerCategoryCoreData)
         appDelegate.saveContext()
-        delegate?.didUpdateCategory()
     }
     
+    // NSFetchedResultsControllerDelegate метод, который срабатывает после каждого сохранения
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        delegate?.didUpdateCategory()
+        delegate?.didUpdateCategories(newCategories: categories)
     }
     
     //MARK: - private methods
@@ -120,10 +115,10 @@ final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol, NSFetc
     }
     
     private func getCategoryCoreData(from category: String) -> TrackerCategoryCoreData? {
-        let request = fetchedResultsController.fetchRequest
-        request.predicate = NSPredicate(format: "name == %@", category as CVarArg)
+        let fetchRequest = TrackerCategoryCoreData.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "name == %@", category as CVarArg)
         do {
-            return try context.fetch(request).first
+            return try context.fetch(fetchRequest).first
         } catch {
             print("Error fetching TrackerCategoryCoreData: \(error)")
             return nil

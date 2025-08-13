@@ -24,6 +24,7 @@ final class TrackerRecordStore: NSObject, TrackerRecordStoreProtocol {
         self.context = context
         super.init()
     }
+    
     //MARK: Protocol methods
     func addRecord(forTrackerID trackerID: UUID, date: Date) throws {
         let fetchRequest: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
@@ -46,7 +47,6 @@ final class TrackerRecordStore: NSObject, TrackerRecordStoreProtocol {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: date)
         let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
-        // ✅ ИСПРАВЛЕНО: Используем `trackerOwner.id` для связи с трекером.
         request.predicate = NSPredicate(format: "trackerOwner.id == %@ AND date >= %@ AND date < %@", trackerID as CVarArg, startOfDay as CVarArg, endOfDay as CVarArg)
         let records = try context.fetch(request)
         if let recordToDelete = records.first {
@@ -75,6 +75,7 @@ final class TrackerRecordStore: NSObject, TrackerRecordStoreProtocol {
         return try context.count(for: request)
         
     }
+    
     func getCompletedRecords() throws -> Set<TrackerRecord> {
         let request: NSFetchRequest<TrackerRecordCoreData> = TrackerRecordCoreData.fetchRequest()
         let coreDataRecords = try context.fetch(request)
@@ -86,5 +87,4 @@ final class TrackerRecordStore: NSObject, TrackerRecordStoreProtocol {
         }
         return Set(records)
     }
-    
 }

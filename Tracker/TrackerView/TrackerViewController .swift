@@ -357,17 +357,8 @@ extension TrackerViewController: TrackerCellDelegate {
     }
 }
 extension TrackerViewController: HabbitCreatorProtocol {
-    func didCreateTracker(/*_ tracker: Tracker, in categoryName: String*/) {
-//        dataProvider.addTrackertoCategory(tracker, categoryName)
+    func didCreateTracker() {
         reloadData()
-//        dataProvider.getCategories() { [weak self] in
-//            guard let self else { return }
-//            DispatchQueue.main.async {
-//                self.categories = self.dataProvider.categories
-//                self.filterTrackersBySelectedDate(self.datePicker)
-//                self.collectionView.reloadData()
-//            }
-//        }
     }
 }
 
