@@ -24,6 +24,7 @@ final class Placeholder {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 12, weight: .medium)
         label.textAlignment = .center
+        label.numberOfLines = 0
         return label
     }()
     

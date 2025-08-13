@@ -68,6 +68,7 @@ final class CategoryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        checkPlaceholderVisibility()
         bindViewModel()
         viewModel.viewDidLoad()
     }
@@ -77,12 +78,14 @@ final class CategoryViewController: UIViewController {
         viewModel.onCategoriesUpdate = { [weak self] in
             DispatchQueue.main.async {
                 self?.tableView.reloadData()
+                self?.checkPlaceholderVisibility()
             }
         }
         
         // Подписываемся на изменение состояния
         viewModel.onStateChange = { [weak self] in
             self?.switchUI()
+            self?.checkPlaceholderVisibility()
         }
     }
     
@@ -119,11 +122,32 @@ final class CategoryViewController: UIViewController {
         ])
         
         switchUI()
+        }
+    
+    private func checkPlaceholderVisibility() {
+        let categoriesCount = viewModel.categories().count
+        
+        if categoriesCount == 0 && viewModel.state != .create {
+            placeholder.showPlaceholder(
+                image: UIImage(resource: .trackersPlaceholder),
+                text: "Привычки и события можно \n объединить по смыслу",
+                view: view
+            )
+            tableView.isHidden = true
+        } else {
+            placeholder.removePlaceholder()
+            if viewModel.state != .create {
+                tableView.isHidden = false
+            }
+        }
     }
     
     private func switchUI() {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
+            
+            self.checkPlaceholderVisibility()
+            
             switch viewModel.state {
             case .onboarding:
                 title = "Категория"
