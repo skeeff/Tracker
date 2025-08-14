@@ -240,6 +240,8 @@ extension CategoryViewController: UITableViewDataSource {
         let isLast = indexPath.row == viewModel.categories().count - 1
         let isFirst = indexPath.row == 0
         
+        tableView.tableHeaderView = UIView()
+        
         cell.textLabel?.text = category.category
         cell.selectionStyle = .none
         cell.backgroundColor = .systemGray6
@@ -267,6 +269,7 @@ extension CategoryViewController: UITableViewDataSource {
             cell.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         } else if isLast {
             cell.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
+            
         } else {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
             cell.layer.cornerRadius = 0
@@ -275,6 +278,7 @@ extension CategoryViewController: UITableViewDataSource {
         return cell
         
     }
+    
 }
 
 
