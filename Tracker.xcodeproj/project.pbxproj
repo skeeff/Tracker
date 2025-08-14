@@ -21,6 +21,7 @@
 		4A4C014A2E1837B300D6E0A0 /* ScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A4C01492E1837A900D6E0A0 /* ScheduleViewController.swift */; };
 		4A4C014C2E183E4800D6E0A0 /* OptionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A4C014B2E183E1600D6E0A0 /* OptionTableViewCell.swift */; };
 		4A4C01502E25750E00D6E0A0 /* ScheduleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A4C014F2E25750600D6E0A0 /* ScheduleCell.swift */; };
+		4A561F2E2E4E0AC000E46023 /* CategoryViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A561F2D2E4E0AC000E46023 /* CategoryViewCell.swift */; };
 		4A5D5E9D2E086144003BC294 /* DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A5D5E9C2E08613F003BC294 /* DateFormatter.swift */; };
 		4A5D5E9F2E0881BC003BC294 /* TrackerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A5D5E9E2E0881B7003BC294 /* TrackerCell.swift */; };
 		4A5D5EA32E0C6D81003BC294 /* HabbitCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A5D5EA22E0C6D6C003BC294 /* HabbitCreator.swift */; };
@@ -61,6 +62,7 @@
 		4A4C01492E1837A900D6E0A0 /* ScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewController.swift; sourceTree = "<group>"; };
 		4A4C014B2E183E1600D6E0A0 /* OptionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionTableViewCell.swift; sourceTree = "<group>"; };
 		4A4C014F2E25750600D6E0A0 /* ScheduleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleCell.swift; sourceTree = "<group>"; };
+		4A561F2D2E4E0AC000E46023 /* CategoryViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewCell.swift; sourceTree = "<group>"; };
 		4A5D5E9C2E08613F003BC294 /* DateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatter.swift; sourceTree = "<group>"; };
 		4A5D5E9E2E0881B7003BC294 /* TrackerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCell.swift; sourceTree = "<group>"; };
 		4A5D5EA22E0C6D6C003BC294 /* HabbitCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabbitCreator.swift; sourceTree = "<group>"; };
@@ -236,6 +238,7 @@
 			children = (
 				4AF286FB2E4A305000B133EC /* CategoryViewController.swift */,
 				4AF286FD2E4A305C00B133EC /* CategoryViewModel.swift */,
+				4A561F2D2E4E0AC000E46023 /* CategoryViewCell.swift */,
 			);
 			path = Category;
 			sourceTree = "<group>";
@@ -342,6 +345,7 @@
 				4AF286D12E4908E500B133EC /* OnboardingViewController.swift in Sources */,
 				4A6315F02E3A5C9300901AED /* TrackerCategoryStore.swift in Sources */,
 				4A6315EE2E3A5C8600901AED /* TrackerStore.swift in Sources */,
+				4A561F2E2E4E0AC000E46023 /* CategoryViewCell.swift in Sources */,
 				1BCB6DEC2DC94BC5003E6FD8 /* StatisticsViewController.swift in Sources */,
 				4A5D5EA32E0C6D81003BC294 /* HabbitCreator.swift in Sources */,
 				4A01A99B2E2816470055D651 /* colorColletionCell.swift in Sources */,

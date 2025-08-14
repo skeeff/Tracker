@@ -19,18 +19,18 @@ final class CategoryViewController: UIViewController {
         let tableView = UITableView(frame: .zero, style: .plain)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.separatorStyle = .singleLine
-        tableView.layer.cornerRadius = 16 
+        tableView.layer.cornerRadius = 16
         tableView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
         tableView.clipsToBounds = true
         tableView.separatorColor = .gray
         tableView.allowsMultipleSelection = false
-        tableView.separatorInset = .init(top: 0, left: 16, bottom: 1, right: 16)
+        tableView.separatorInset = .init(top: 0, left: 16, bottom: 0, right: 16)
         tableView.layer.cornerRadius = 16
         tableView.isScrollEnabled = true
         tableView.showsVerticalScrollIndicator = false
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "reuseIdentifier")
+        tableView.register(CategoryCell.self, forCellReuseIdentifier: CategoryCell.reuseIdentifier)
         return tableView
     }()
     
@@ -122,7 +122,7 @@ final class CategoryViewController: UIViewController {
         ])
         
         switchUI()
-        }
+    }
     
     private func checkPlaceholderVisibility() {
         let categoriesCount = viewModel.categories().count
@@ -234,14 +234,26 @@ extension CategoryViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: CategoryCell.reuseIdentifier, for: indexPath) as! CategoryCell
         let category = viewModel.categories()[indexPath.row]
         let isSelected = viewModel.isSelected(at: indexPath)
         let isLast = indexPath.row == viewModel.categories().count - 1
+        let isFirst = indexPath.row == 0
         
         cell.textLabel?.text = category.category
         cell.selectionStyle = .none
         cell.backgroundColor = .systemGray6
+        cell.layer.cornerRadius = 16
+        cell.layer.masksToBounds = true
+        cell.preservesSuperviewLayoutMargins = false
+//                cell.separatorInset = .zero
+        cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        cell.layoutMargins = .zero
+        
+        
+        cell.clipsToBounds = true
+        
+        
         
         if isSelected {
             cell.accessoryType = .checkmark
@@ -249,16 +261,16 @@ extension CategoryViewController: UITableViewDataSource {
             cell.accessoryType = .none
         }
         
-        if isLast {
-            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
-            cell.layer.cornerRadius = 16
+        if isFirst && isLast{
+            cell.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner, .layerMinXMaxYCorner]
+        }else if isFirst {
+            cell.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        } else if isLast {
             cell.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
         } else {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-            cell.layer.cornerRadius = 0 // Убираем скругление
+            cell.layer.cornerRadius = 0
         }
-        
-        cell.clipsToBounds = true
         
         return cell
         
