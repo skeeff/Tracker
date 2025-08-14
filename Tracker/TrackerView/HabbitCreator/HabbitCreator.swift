@@ -137,7 +137,7 @@ final class HabbitCreatorViewController: UIViewController {
     private var selectedColor: UIColor?
     
     private let tableView = UITableView(frame: .zero, style: .insetGrouped)
-
+    
     weak var delegate: HabbitCreatorProtocol?
     private let dataProvider: DataProviderProtocol
     
@@ -293,20 +293,20 @@ final class HabbitCreatorViewController: UIViewController {
         let isColorSelected = selectedColor != nil
         
         let shouldBeEnabled = isNameValid && isCategorySelected && isScheduleSelected && isEmojiSelected && isColorSelected
-                
-                // --- АНИМАЦИЯ ДОБАВЛЕНА ---
-                // Анимация изменения состояния кнопки создания
-                if createButton.isEnabled != shouldBeEnabled {
-                    UIView.transition(with: createButton, duration: 0.3, options: .transitionCrossDissolve) {
-                        self.createButton.isEnabled = shouldBeEnabled
-                        self.createButton.backgroundColor = shouldBeEnabled ? .black : .systemGray3
-                    }
-                } else {
-                    createButton.isEnabled = shouldBeEnabled
-                    createButton.backgroundColor = shouldBeEnabled ? .black : .systemGray3
-                }
-//        createButton.isEnabled = isNameValid && isCategorySelected && isScheduleSelected && isEmojiSelected && isColorSelected
-//        createButton.backgroundColor = createButton.isEnabled ? .black : .systemGray3
+        
+        // --- АНИМАЦИЯ ДОБАВЛЕНА ---
+        // Анимация изменения состояния кнопки создания
+        if createButton.isEnabled != shouldBeEnabled {
+            UIView.transition(with: createButton, duration: 0.3, options: .transitionCrossDissolve) {
+                self.createButton.isEnabled = shouldBeEnabled
+                self.createButton.backgroundColor = shouldBeEnabled ? .black : .systemGray3
+            }
+        } else {
+            createButton.isEnabled = shouldBeEnabled
+            createButton.backgroundColor = shouldBeEnabled ? .black : .systemGray3
+        }
+        //        createButton.isEnabled = isNameValid && isCategorySelected && isScheduleSelected && isEmojiSelected && isColorSelected
+        //        createButton.backgroundColor = createButton.isEnabled ? .black : .systemGray3
     }
 }
 
@@ -372,7 +372,7 @@ extension HabbitCreatorViewController: UITableViewDataSource, UITableViewDelegat
         
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.row == 0 {
-//            print("Переход к выбору категории")
+            //            print("Переход к выбору категории")
             tableView.reloadRows(at: [indexPath], with: .automatic)
             updateCreateButtonState()
             let categoryNC = UINavigationController(rootViewController: categoryVC)

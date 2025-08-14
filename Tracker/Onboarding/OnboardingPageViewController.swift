@@ -80,8 +80,8 @@ extension OnboardingPageViewController: UIPageViewControllerDelegate {
         transitionCompleted completed: Bool
     ) {
         if let currentViewController = pageViewController.viewControllers?.first,
-                   let currentIndex = pages.firstIndex(of: currentViewController) {
-                    pageControl.currentPage = currentIndex
-                }
+           let currentIndex = pages.firstIndex(of: currentViewController) {
+            pageControl.currentPage = currentIndex
+        }
     }
 }

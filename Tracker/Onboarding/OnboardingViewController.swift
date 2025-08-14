@@ -36,19 +36,19 @@ final class OnboardingViewController: UIViewController {
     }()
     
     init(
-           nibName nibNameOrNil: String?,
-           bundle nibBundleOrNil: Bundle?,
-           title: String?,
-           backgroundImage: UIImage?
-       ) {
-           self.titleText = title
-           self.backgroundImage = backgroundImage
-           super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-       }
-       
-       required init?(coder: NSCoder) {
-           fatalError("init(coder:) has not been implemented")
-       }
+        nibName nibNameOrNil: String?,
+        bundle nibBundleOrNil: Bundle?,
+        title: String?,
+        backgroundImage: UIImage?
+    ) {
+        self.titleText = title
+        self.backgroundImage = backgroundImage
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -60,8 +60,8 @@ final class OnboardingViewController: UIViewController {
         titleLabel.text = titleText
         backgroundImageView.image = backgroundImage
         
-//        view.addSubview(titleLabel)
-//        view.addSubview(transitionButton)
+        //        view.addSubview(titleLabel)
+        //        view.addSubview(transitionButton)
         view.addSubview(backgroundImageView)
         backgroundImageView.addSubview(transitionButton)
         backgroundImageView.bringSubviewToFront(transitionButton)
@@ -74,11 +74,11 @@ final class OnboardingViewController: UIViewController {
             backgroundImageView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
             transitionButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
-                                                constant: 20),
+                                                      constant: 20),
             transitionButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
-                                                 constant: -20),
+                                                       constant: -20),
             transitionButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor,
-                                               constant: -50),
+                                                     constant: -50),
             transitionButton.heightAnchor.constraint(equalToConstant: 60),
             
             titleLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor,
@@ -94,8 +94,8 @@ final class OnboardingViewController: UIViewController {
     @objc
     private func handleTransition() {
         let tabBarController = TabBarViewController()
-                tabBarController.modalPresentationStyle = .fullScreen
-                present(tabBarController, animated: true, completion: nil)
+        tabBarController.modalPresentationStyle = .fullScreen
+        present(tabBarController, animated: true, completion: nil)
     }
     
 }

@@ -246,7 +246,7 @@ extension CategoryViewController: UITableViewDataSource {
         cell.layer.cornerRadius = 16
         cell.layer.masksToBounds = true
         cell.preservesSuperviewLayoutMargins = false
-//                cell.separatorInset = .zero
+        //                cell.separatorInset = .zero
         cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         cell.layoutMargins = .zero
         
