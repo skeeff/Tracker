@@ -143,19 +143,8 @@ final class TrackerCell: UICollectionViewCell {
         delegate?.toggleCompleteButton(isCompleted: isCurrentlyCompleted, for: id) { }
     }
     
-    private func formatDaysString(_ count: Int) -> String{
-        let lastDigit = count % 10
-        let lastTwoDigits = count % 100 // 11, 12, 13, 14
-        
-        if lastTwoDigits >= 11 && lastTwoDigits <= 14 {
-            return "\(count) дней"
-        } else if lastDigit == 1 {
-            return "\(count) день"
-        } else if lastDigit >= 2 && lastDigit <= 4 {
-            return "\(count) дня"
-        } else {
-            return "\(count) дней"
-        }
+    private func formatDaysString(_ count: Int) -> String {
+        return String(format: NSLocalizedString("days_plural", comment: ""), count)
     }
     
     private func animateAddButtonTapped(){
