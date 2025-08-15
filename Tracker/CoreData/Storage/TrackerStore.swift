@@ -27,6 +27,7 @@ final class TrackerStore: NSObject, TrackerStoreProtocol {
         self.appDelegate = appDelegate
         super.init()
     }
+    
     //MARK: Protocol methods
     
     func getTracker(from trackerCoreData: TrackerCoreData) -> Tracker? {
@@ -92,5 +93,4 @@ final class TrackerStore: NSObject, TrackerStoreProtocol {
         appDelegate.saveContext()
         delegate?.didUpdateTracker()
     }
-    
 }
