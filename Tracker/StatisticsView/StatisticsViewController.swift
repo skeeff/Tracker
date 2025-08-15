@@ -4,7 +4,7 @@ final class StatisticsViewController: UIViewController{
     
     private lazy var statisticsLabel: UILabel? = {
         let tempLabel = UILabel()
-        tempLabel.text = "Статистика"
+        tempLabel.text = NSLocalizedString("statistics", comment: "")
         tempLabel.font = .systemFont(ofSize: 34, weight: .bold)
         tempLabel.textColor = .black
         tempLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -20,7 +20,7 @@ final class StatisticsViewController: UIViewController{
     
     private lazy var placeholderLabel: UILabel? = {
         let tempLabel = UILabel()
-        tempLabel.text = "Анализировать пока нечего"
+        tempLabel.text = NSLocalizedString("nothing_to_analyze", comment: "")
         tempLabel.font = .systemFont(ofSize: 12, weight: .medium)
         tempLabel.textColor = .black
         tempLabel.translatesAutoresizingMaskIntoConstraints = false

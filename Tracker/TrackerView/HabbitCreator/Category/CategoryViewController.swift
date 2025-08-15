@@ -42,7 +42,7 @@ final class CategoryViewController: UIViewController {
         textField.layer.cornerRadius = 16
         textField.clearButtonMode = .whileEditing
         textField.backgroundColor = .systemGray6
-        textField.placeholder = "Введите название категории"
+        textField.placeholder = NSLocalizedString("category_name_placeholder", comment: "")
         textField.font = .systemFont(ofSize: 17, weight: .regular)
         textField.delegate = self
         return textField
@@ -130,7 +130,7 @@ final class CategoryViewController: UIViewController {
         if categoriesCount == 0 && viewModel.state != .create {
             placeholder.showPlaceholder(
                 image: UIImage(resource: .trackersPlaceholder),
-                text: "Привычки и события можно \n объединить по смыслу",
+                text: NSLocalizedString("habits_events_placeholder", comment: ""),
                 view: view
             )
             tableView.isHidden = true
@@ -150,21 +150,21 @@ final class CategoryViewController: UIViewController {
             
             switch viewModel.state {
             case .onboarding:
-                title = "Категория"
+                title = NSLocalizedString("category", comment: "")
                 textField.isHidden = true
                 tableView.isHidden = false
-                button.setTitle(NSLocalizedString("Добавить категорию", comment: ""), for: .normal)
+                button.setTitle(NSLocalizedString("add_category", comment: ""), for: .normal)
             case .choose:
-                title = "Категория"
+                title = NSLocalizedString("category", comment: "")
                 textField.isHidden = true
                 tableView.isHidden = false
-                button.setTitle(NSLocalizedString("Добавить категорию", comment: ""), for: .normal)
+                button.setTitle(NSLocalizedString("add_category", comment: ""), for: .normal)
                 placeholder.removePlaceholder()
             case .create:
-                title = "Новая категорию"
+                title = NSLocalizedString("new_category", comment: "")
                 tableView.isHidden = true
                 textField.isHidden = false
-                button.setTitle(NSLocalizedString("Готово", comment: ""), for: .normal)
+                button.setTitle(NSLocalizedString("done", comment: ""), for: .normal)
                 button.backgroundColor = .black.withAlphaComponent(0.3)
                 button.isUserInteractionEnabled = false
                 placeholder.removePlaceholder()

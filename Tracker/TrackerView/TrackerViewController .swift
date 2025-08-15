@@ -52,7 +52,7 @@ final class TrackerViewController: UIViewController{
     
     private lazy var placeholderLabel: UILabel = {
         let temporaryLabel = UILabel()
-        temporaryLabel.text = "Что будем отслеживать?"
+        temporaryLabel.text = NSLocalizedString("what_to_track", comment: "")
         temporaryLabel.font = .systemFont(ofSize: 12, weight: .medium)
         temporaryLabel.textColor = .black
         temporaryLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -61,7 +61,7 @@ final class TrackerViewController: UIViewController{
     
     private lazy var trackersLabel: UILabel = {
         let label = UILabel()
-        label.text = "Трекеры"
+        label.text = NSLocalizedString("trackers",comment: "")
         label.font = .systemFont(ofSize: 34, weight: .bold)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -70,7 +70,7 @@ final class TrackerViewController: UIViewController{
     
     private lazy var searchField: UISearchController = {
         let temporarySearchField = UISearchController()
-        temporarySearchField.searchBar.placeholder = "Поиск"
+        temporarySearchField.searchBar.placeholder = NSLocalizedString("search", comment: "")
         temporarySearchField.searchBar.layer.cornerRadius = 8
         temporarySearchField.searchBar.clipsToBounds = true
         temporarySearchField.searchBar.translatesAutoresizingMaskIntoConstraints = false
@@ -104,8 +104,8 @@ final class TrackerViewController: UIViewController{
                 self.filterTrackersBySelectedDate(self.datePicker)
                 self.updatePlaceholderVisibility()
                 self.collectionView.reloadData()
-                print("ALL \(self.categories)")
-                print("VISIBLE \(self.visibleCategories)")
+//                print("ALL \(self.categories)")
+//                print("VISIBLE \(self.visibleCategories)")
             }
         }
     }
@@ -152,7 +152,7 @@ final class TrackerViewController: UIViewController{
     private func updatePlaceholderVisibility(){
         if visibleCategories.isEmpty {
             placeholderImageView.image = UIImage(named: "trackers_placeholder")
-            placeholderLabel.text = "Что будем отслеживать?"
+            placeholderLabel.text = NSLocalizedString("what_to_track", comment: "")
             placeholderImageView.isHidden = false
             placeholderLabel.isHidden = false
             collectionView.isHidden = true
@@ -217,8 +217,8 @@ final class TrackerViewController: UIViewController{
                 self.filterTrackersBySelectedDate(self.datePicker)
                 self.collectionView.reloadData()
                 self.updatePlaceholderVisibility()
-                print("ALL \(self.categories)")
-                print("VISIBLE \(self.visibleCategories)")
+//                print("ALL \(self.categories)")
+//                print("VISIBLE \(self.visibleCategories)")
             }
         }
     }
@@ -350,8 +350,8 @@ extension TrackerViewController: TrackerCellDelegate {
                 self.filterTrackersBySelectedDate(self.datePicker)
                 self.collectionView.reloadData()
                 self.updatePlaceholderVisibility()
-                print("ALL \(self.categories)")
-                print("VISIBLE \(self.visibleCategories)")
+//                print("ALL \(self.categories)")
+//                print("VISIBLE \(self.visibleCategories)")
             }
         }
     }

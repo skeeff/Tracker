@@ -18,7 +18,7 @@ final class HabbitCreatorViewController: UIViewController {
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Новая привычка"
+        label.text = NSLocalizedString("new_habit", comment: "")
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -26,7 +26,7 @@ final class HabbitCreatorViewController: UIViewController {
     }()
     private lazy var warningLabel: UILabel = {
         let label = UILabel()
-        label.text = "Ограничение 38 символов"
+        label.text = NSLocalizedString("character_limit", comment: "")
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         label.textColor = .systemRed
@@ -37,7 +37,7 @@ final class HabbitCreatorViewController: UIViewController {
     private lazy var textField: UITextField = {
         let textField = UITextField()
         textField.layer.cornerRadius = 16
-        textField.placeholder = "Введите название трекера"
+        textField.placeholder = NSLocalizedString("tracker_name_placeholder", comment: "")
         textField.backgroundColor = .systemGray6
         textField.textColor = .black
         textField.setLeftPaddingPoints(12)
@@ -47,7 +47,7 @@ final class HabbitCreatorViewController: UIViewController {
     }()
     private lazy var createButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Создать", for: .normal)
+        button.setTitle(NSLocalizedString("create", comment: ""), for: .normal)
         button.layer.cornerRadius = 16
         button.layer.masksToBounds = true
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -57,7 +57,7 @@ final class HabbitCreatorViewController: UIViewController {
     }()
     private lazy var cancelButton: UIButton = {
         let cancelButton = UIButton(type: .system)
-        cancelButton.setTitle("Отменить", for: .normal)
+        cancelButton.setTitle(NSLocalizedString("cancel", comment: ""), for: .normal)
         cancelButton.setTitleColor(.systemRed, for: .normal)
         cancelButton.backgroundColor = .white
         cancelButton.layer.cornerRadius = 16
@@ -85,7 +85,7 @@ final class HabbitCreatorViewController: UIViewController {
         let label = UILabel()
         label.textColor = .black
         label.font = .systemFont(ofSize: 19, weight: .bold)
-        label.text = "Emoji"
+        label.text = NSLocalizedString("emoji", comment: "")
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -107,7 +107,7 @@ final class HabbitCreatorViewController: UIViewController {
         let label = UILabel()
         label.textColor = .black
         label.font = .systemFont(ofSize: 19, weight: .bold)
-        label.text = "Цвет"
+        label.text = NSLocalizedString("color", comment: "")
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -130,7 +130,10 @@ final class HabbitCreatorViewController: UIViewController {
     private lazy var scheduleVC = ScheduleViewController()
     private lazy var categoryVC = CategoryViewController(viewModel: categoryViewModel)
     
-    private let options = ["Категория", "Расписание"]
+    private let options = [
+        NSLocalizedString("category", comment: ""),
+        NSLocalizedString("schedule", comment: "")
+    ]
     private var selectedCategory: String = ""
     private var selectedSchedule: Set<Weekday> = []
     private var selectedEmoji: String?
@@ -293,9 +296,7 @@ final class HabbitCreatorViewController: UIViewController {
         let isColorSelected = selectedColor != nil
         
         let shouldBeEnabled = isNameValid && isCategorySelected && isScheduleSelected && isEmojiSelected && isColorSelected
-        
-        // --- АНИМАЦИЯ ДОБАВЛЕНА ---
-        // Анимация изменения состояния кнопки создания
+        //animation test
         if createButton.isEnabled != shouldBeEnabled {
             UIView.transition(with: createButton, duration: 0.3, options: .transitionCrossDissolve) {
                 self.createButton.isEnabled = shouldBeEnabled
@@ -305,8 +306,6 @@ final class HabbitCreatorViewController: UIViewController {
             createButton.isEnabled = shouldBeEnabled
             createButton.backgroundColor = shouldBeEnabled ? .black : .systemGray3
         }
-        //        createButton.isEnabled = isNameValid && isCategorySelected && isScheduleSelected && isEmojiSelected && isColorSelected
-        //        createButton.backgroundColor = createButton.isEnabled ? .black : .systemGray3
     }
 }
 
@@ -355,7 +354,7 @@ extension HabbitCreatorViewController: UITableViewDataSource, UITableViewDelegat
                 cell.detailTextLabel?.text = scheduleString
             }
             cell.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
-            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude) // Убираем разделитель для последней
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude) 
         }
         cell.layer.masksToBounds = true
         cell.preservesSuperviewLayoutMargins = false
