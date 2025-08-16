@@ -71,3 +71,9 @@
 "schedule_friday_short" = "Fri";
 "schedule_saturday_short" = "Sat";
 "schedule_sunday_short" = "Sun";
+/* Filter*/
+"alltrackers" = "All trackers";
+"todaytrackers" = "Today's trackers";
+"completetrackers" = "Completed";
+"incompletetrackers" = "Incomplete";
+"filter_title" = "Filter";
