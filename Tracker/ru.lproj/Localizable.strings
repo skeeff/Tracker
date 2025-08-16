@@ -9,6 +9,15 @@
 "add" = "Добавить";
 "search" = "Поиск";
 
+"edit" = "Редактировать";
+"delete" = "Удалить";
+"delete_tracker" = "Удалить трекер";
+"delete_tracker_message" = "Вы уверены, что хотите удалить этот трекер?";
+"cancel" = "Отмена";
+
+"edit_tracker" = "Редактировать трекер";
+"save" = "Сохранить";
+
 /* Main Tracker View */
 "trackers" = "Трекеры";
 "what_to_track" = "Что будем отслеживать?";

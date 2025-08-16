@@ -204,6 +204,33 @@ final class TrackerViewController: UIViewController{
         self.updatePlaceholderVisibility()
     }
     
+    // context
+    private func showDeleteConfirmation(for tracker: Tracker) {
+        let alert = UIAlertController(
+            title: NSLocalizedString("delete_tracker", comment: ""),
+            message: NSLocalizedString("delete_tracker_message", comment: ""),
+            preferredStyle: .alert
+        )
+        
+        let deleteAction = UIAlertAction(
+            title: NSLocalizedString("delete", comment: ""),
+            style: .destructive
+        ) { [weak self] _ in
+            self?.dataProvider.deleteTracker(tracker)
+            self?.reloadData()
+        }
+        
+        let cancelAction = UIAlertAction(
+            title: NSLocalizedString("cancel", comment: ""),
+            style: .cancel
+        )
+        
+        alert.addAction(deleteAction)
+        alert.addAction(cancelAction)
+        
+        present(alert, animated: true)
+    }
+    
     //MARK: objc
     @objc private func addButtonTapped(){
         let habbitCreatorVC = HabbitCreatorViewController(dataProvider: dataProvider)
@@ -273,7 +300,6 @@ extension TrackerViewController:  UICollectionViewDataSource, UICollectionViewDe
             daysCompleted: daysCompleted
         )
         return cell
-        
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -344,6 +370,32 @@ extension TrackerViewController: TrackerCellDelegate {
         completion()
         
     }
+    
+    func editTracker(_ tracker: Tracker) {
+        // Find the category for this tracker
+        let category = findCategoryForTracker(tracker)
+        
+        let habbitCreatorVC = HabbitCreatorViewController(dataProvider: dataProvider, trackerToEdit: tracker)
+        habbitCreatorVC.modalPresentationStyle = .pageSheet
+        habbitCreatorVC.modalTransitionStyle = .coverVertical
+        habbitCreatorVC.delegate = self
+        habbitCreatorVC.configureForEditing(tracker: tracker, category: category)
+        present(habbitCreatorVC, animated: true)
+    }
+
+    private func findCategoryForTracker(_ tracker: Tracker) -> String {
+        for category in categories {
+            if category.trackers.contains(where: { $0.id == tracker.id }) {
+                return category.category
+            }
+        }
+        return ""
+    }
+    
+    func deleteTracker(_ tracker: Tracker) {
+        showDeleteConfirmation(for: tracker)
+    }
+    
     private func reloadData() {
         dataProvider.getCategories() { [weak self] in
             guard let self else { return }
@@ -354,8 +406,7 @@ extension TrackerViewController: TrackerCellDelegate {
                 self.filterTrackersBySelectedDate(self.datePicker)
                 self.collectionView.reloadData()
                 self.updatePlaceholderVisibility()
-//                print("ALL \(self.categories)")
-//                print("VISIBLE \(self.visibleCategories)")
+
             }
         }
     }
@@ -385,28 +436,23 @@ extension TrackerViewController: UISearchResultsUpdating {
             let searchTerms = searchText.lowercased().components(separatedBy: " ")
             
             visibleCategories = categories.compactMap { category in
-                // Check if category name matches any search term
                 let categoryMatches = searchTerms.contains { term in
                     category.category.lowercased().contains(term)
                 }
                 
-                // Check if any tracker names match any search term
                 let filteredTrackers = category.trackers.filter { tracker in
                     searchTerms.contains { term in
                         tracker.name.lowercased().contains(term)
                     }
                 }
                 
-                // Return category if either matches
                 if categoryMatches || !filteredTrackers.isEmpty {
                     if categoryMatches {
-                        // Show all trackers in matching category
                         return TrackerCategory(
                             category: category.category,
                             trackers: category.trackers
                         )
                     } else {
-                        // Show only matching trackers
                         return TrackerCategory(
                             category: category.category,
                             trackers: filteredTrackers
@@ -421,6 +467,7 @@ extension TrackerViewController: UISearchResultsUpdating {
             datePickerValueChanged(datePicker)
         }
     }
+    //only categories
 //    func updateSearchResults(for searchController: UISearchController) {
 //        isSearch = true
 //        
@@ -451,6 +498,10 @@ extension TrackerViewController: UISearchResultsUpdating {
 }
 
 extension TrackerViewController: HabbitCreatorProtocol {
+    func didUpdateTracker() {
+        reloadData()
+    }
+    
     func didCreateTracker() {
         reloadData()
     }

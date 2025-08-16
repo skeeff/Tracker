@@ -33,6 +33,18 @@ final class ColorCollectionCell: UICollectionViewCell {
         colorView.backgroundColor = color
         
     }
+    
+    func setSelected(_ isSelected: Bool, color: UIColor) {
+        if isSelected {
+            layer.borderWidth = 3
+            layer.masksToBounds = true
+            layer.cornerRadius = 16
+            layer.borderColor = color.withAlphaComponent(0.3).cgColor
+        } else {
+            layer.borderWidth = 0
+            layer.borderColor = UIColor.clear.cgColor
+        }
+    }
 }
 
 

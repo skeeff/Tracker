@@ -12,6 +12,7 @@ protocol DataProviderProtocol: AnyObject {
     func addTrackertoCategory(_ traker: Tracker, _ category: String)
     func deleteCategory(_ name: String)
     func deleteTracker(_ tracker: Tracker)
+    func updateTracker(_ tracker: Tracker)
     func addRecord(forTrackerID trackerID: UUID, date: Date)
     func deleteRecord(forTrackerID trackerID: UUID, date: Date)
     func getCompletedCount(for trackerID: UUID) -> Int
@@ -81,6 +82,10 @@ final class DataProvider: NSObject, DataProviderProtocol {
         } catch {
             print("Ошибка при удалении записи: \(error)")
         }
+    }
+    
+    func updateTracker(_ tracker: Tracker) {
+        trackerStore.updateTracker(tracker)
     }
     
     func getCompletedCount(for trackerID: UUID) -> Int {

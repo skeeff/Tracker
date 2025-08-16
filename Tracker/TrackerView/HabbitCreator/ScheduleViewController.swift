@@ -81,6 +81,11 @@ final class ScheduleViewController: UIViewController {
         ])
     }
     
+    func setInitialSelection(_ weekdays: Set<Weekday>) {
+        selectedWeekdays = weekdays
+        tableView.reloadData()
+    }
+    
     @objc func doneButtonTapped() {
         delegate?.didSelectSchedule(selectedWeekdays)
         self.dismiss(animated: true)
@@ -94,7 +99,8 @@ extension ScheduleViewController: UITableViewDataSource, UITableViewDelegate {
         }
         let weekday = weekdays[indexPath.row]
         let isOn = selectedWeekdays.contains(weekday)
-        cell.configure(with: weekday.description, isOn: false)
+        cell.configure(with: weekday.description, isOn: isOn)
+//        cell.configure(with: weekday.description, isOn: false)
         cell.backgroundColor = .systemGray6
         cell.layer.cornerRadius = 16
         if indexPath.row == 0 {

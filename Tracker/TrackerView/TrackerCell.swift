@@ -2,6 +2,8 @@ import UIKit
 
 protocol TrackerCellDelegate: AnyObject {
     func toggleCompleteButton(isCompleted: Bool, for trackerID: UUID, completion: @escaping () -> Void)
+    func editTracker(_ tracker: Tracker)
+    func deleteTracker(_ tracker: Tracker)
 }
 
 final class TrackerCell: UICollectionViewCell {
@@ -63,6 +65,11 @@ final class TrackerCell: UICollectionViewCell {
     
     private var trackerID: UUID?
     private var isCurrentlyCompleted: Bool = false
+    private var currentTracker: Tracker?
+    private lazy var contextMenuInteraction: UIContextMenuInteraction = {
+        let interaction = UIContextMenuInteraction(delegate: self)
+        return interaction
+    }()
     
     override init(frame: CGRect){
         super.init(frame: frame)
@@ -74,6 +81,7 @@ final class TrackerCell: UICollectionViewCell {
     }
     
     func configure(with tracker: Tracker, isCompletedForSelectedDate: Bool, daysCompleted: Int) {
+        self.currentTracker = tracker
         self.trackerID = tracker.id
         self.isCurrentlyCompleted = isCompletedForSelectedDate
         
@@ -103,6 +111,7 @@ final class TrackerCell: UICollectionViewCell {
         contentView.addSubview(quantityLabel)
         cardView.addSubview(trackerLabel)
         cardView.addSubview(emojiBackgroundView)
+        cardView.addInteraction(contextMenuInteraction)
         emojiBackgroundView.addSubview(emojiLabel)
         contentView.bringSubviewToFront(addButton)
         
@@ -135,6 +144,35 @@ final class TrackerCell: UICollectionViewCell {
             
         ])
     }
+    
+    //MARK: Context menu
+    /*override*/ func contextMenuInteraction(_ interaction: UIContextMenuInteraction, willDisplayMenuFor configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionAnimating?) {
+        // Optional: Customize menu appearance
+    }
+
+    /*override*/ func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
+            let editAction = UIAction(
+                title: NSLocalizedString("edit", comment: "")
+            ) { [weak self] _ in
+                guard let self = self,
+                      let tracker = self.currentTracker else { return }
+                self.delegate?.editTracker(tracker)
+            }
+            
+            let deleteAction = UIAction(
+                title: NSLocalizedString("delete", comment: ""),
+                attributes: .destructive
+            ) { [weak self] _ in
+                guard let self = self,
+                      let tracker = self.currentTracker else { return }
+                self.delegate?.deleteTracker(tracker)
+            }
+            
+            return UIMenu(children: [editAction, deleteAction])
+        }
+    }
+    
     
     @objc private func addButtonTapped(){
         guard addButton.isUserInteractionEnabled, let id = trackerID else { return }
@@ -172,4 +210,8 @@ final class TrackerCell: UICollectionViewCell {
         trackerID = nil
         isCurrentlyCompleted = false
     }
+}
+
+extension TrackerCell: UIContextMenuInteractionDelegate {
+    // The methods are already implemented above
 }

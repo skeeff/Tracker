@@ -31,6 +31,15 @@ final class EmojiCollectionCell: UICollectionViewCell {
         emojiLabel.text = emoji
         
     }
+    func setSelected(_ isSelected: Bool) {
+        if isSelected {
+            backgroundColor = UIColor(white: 0, alpha: 0.12)
+            layer.cornerRadius = 16
+        } else {
+            backgroundColor = .clear
+            layer.cornerRadius = 0
+        }
+    }
 }
 
 
