@@ -9,6 +9,8 @@ final class TrackerViewController: UIViewController{
     private let calendar = Calendar.current
     private var currentDate = Date()
     
+    private var isSearch: Bool = false
+    
     private let dataProvider: DataProviderProtocol
     
     private lazy var datePicker: UIDatePicker = {
@@ -68,13 +70,14 @@ final class TrackerViewController: UIViewController{
     }()
     
     
-    private lazy var searchField: UISearchController = {
-        let temporarySearchField = UISearchController()
-        temporarySearchField.searchBar.placeholder = NSLocalizedString("search", comment: "")
-        temporarySearchField.searchBar.layer.cornerRadius = 8
-        temporarySearchField.searchBar.clipsToBounds = true
-        temporarySearchField.searchBar.translatesAutoresizingMaskIntoConstraints = false
-        return temporarySearchField
+    private lazy var searchController: UISearchController = {
+        let searchController = UISearchController(searchResultsController: nil)
+        searchController.searchBar.placeholder = NSLocalizedString("search", comment: "")
+        searchController.searchBar.layer.cornerRadius = 8
+        searchController.searchBar.clipsToBounds = true
+        searchController.searchBar.translatesAutoresizingMaskIntoConstraints = false
+        searchController.delegate = self
+        return searchController
     }()
     
     init(
@@ -138,8 +141,9 @@ final class TrackerViewController: UIViewController{
         navigationItem.title = trackersLabel.text
         navigationItem.largeTitleDisplayMode = .always
         
-        navigationItem.searchController = searchField
+        navigationItem.searchController = searchController
         navigationItem.searchController?.searchBar.tintColor = .label
+        searchController.searchResultsUpdater = self
         navigationItem.hidesSearchBarWhenScrolling = false
         
         let addButton = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(addButtonTapped))
@@ -356,6 +360,96 @@ extension TrackerViewController: TrackerCellDelegate {
         }
     }
 }
+
+extension TrackerViewController: UISearchControllerDelegate {
+    func willPresentSearchController(_ searchController: UISearchController) {
+
+         isSearch = true
+         collectionView.reloadData()
+     }
+     
+     func didDismissSearchController(_ searchController: UISearchController) {
+
+         
+         datePickerValueChanged(datePicker)
+         isSearch = false
+         collectionView.reloadData()
+     }
+}
+
+extension TrackerViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        isSearch = true
+        
+        if let searchText = searchController.searchBar.text, !searchText.isEmpty {
+            let searchTerms = searchText.lowercased().components(separatedBy: " ")
+            
+            visibleCategories = categories.compactMap { category in
+                // Check if category name matches any search term
+                let categoryMatches = searchTerms.contains { term in
+                    category.category.lowercased().contains(term)
+                }
+                
+                // Check if any tracker names match any search term
+                let filteredTrackers = category.trackers.filter { tracker in
+                    searchTerms.contains { term in
+                        tracker.name.lowercased().contains(term)
+                    }
+                }
+                
+                // Return category if either matches
+                if categoryMatches || !filteredTrackers.isEmpty {
+                    if categoryMatches {
+                        // Show all trackers in matching category
+                        return TrackerCategory(
+                            category: category.category,
+                            trackers: category.trackers
+                        )
+                    } else {
+                        // Show only matching trackers
+                        return TrackerCategory(
+                            category: category.category,
+                            trackers: filteredTrackers
+                        )
+                    }
+                }
+                return nil
+            }
+            collectionView.reloadData()
+        } else {
+            visibleCategories = categories
+            datePickerValueChanged(datePicker)
+        }
+    }
+//    func updateSearchResults(for searchController: UISearchController) {
+//        isSearch = true
+//        
+//        if let searchText = searchController.searchBar.text, !searchText.isEmpty {
+//            visibleCategories = categories.compactMap { category in
+//                let filteredTrackers = category.trackers.filter { tracker in
+//                    tracker.name.lowercased().contains(searchText.lowercased())
+//                }
+//                if filteredTrackers.isEmpty {
+//                    return nil
+//                } else {
+//                    return TrackerCategory(
+//                        category: category.category,
+//                        trackers: filteredTrackers
+//                    )
+//                }
+//            }
+//            collectionView.reloadData()
+//        } else {
+//            visibleCategories = categories
+//            datePickerValueChanged(datePicker)
+//        }
+//        
+//    }
+    
+    
+    
+}
+
 extension TrackerViewController: HabbitCreatorProtocol {
     func didCreateTracker() {
         reloadData()
