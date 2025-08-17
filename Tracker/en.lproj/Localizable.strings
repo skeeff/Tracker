@@ -39,6 +39,7 @@
 /* Statistics */
 "statistics" = "Statistics";
 "nothing_to_analyze" = "Nothing to analyze yet";
+"complete_trackers" = "Trackers complete";
 
 /* Onboarding */
 "wow_technology" = "Wow, technology!";

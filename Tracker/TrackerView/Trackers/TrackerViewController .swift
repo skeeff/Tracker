@@ -17,6 +17,7 @@ final class TrackerViewController: UIViewController{
     
     private lazy var datePicker: UIDatePicker = {
         let datePicker = UIDatePicker()
+        datePicker.backgroundColor = .systemBackground
         datePicker.layer.cornerRadius = 8
         datePicker.layer.masksToBounds = true
         datePicker.overrideUserInterfaceStyle = .light
@@ -43,6 +44,7 @@ final class TrackerViewController: UIViewController{
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: TrackerCollectionViewHeader.reuseIdentifier
         )
+        collectionView.backgroundColor = .systemBackground
         return collectionView
     }()
     
@@ -58,7 +60,7 @@ final class TrackerViewController: UIViewController{
         let temporaryLabel = UILabel()
         temporaryLabel.text = NSLocalizedString("what_to_track", comment: "")
         temporaryLabel.font = .systemFont(ofSize: 12, weight: .medium)
-        temporaryLabel.textColor = .black
+        temporaryLabel.textColor = .label
         temporaryLabel.translatesAutoresizingMaskIntoConstraints = false
         return temporaryLabel
     }()
@@ -66,6 +68,7 @@ final class TrackerViewController: UIViewController{
     private lazy var trackersLabel: UILabel = {
         let label = UILabel()
         label.text = NSLocalizedString("trackers",comment: "")
+        label.textColor = .label
         label.font = .systemFont(ofSize: 34, weight: .bold)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -115,17 +118,6 @@ final class TrackerViewController: UIViewController{
         dataProvider.delegate = self
         reloadData()
     
-//        dataProvider.getCategories() { [weak self] in
-//            guard let self else { return }
-//            DispatchQueue.main.async {
-//                self.categories = self.dataProvider.categories
-//                self.filterTrackersBySelectedDate(self.datePicker)
-//                self.updatePlaceholderVisibility()
-//                self.collectionView.reloadData()
-//                //                print("ALL \(self.categories)")
-//                //                print("VISIBLE \(self.visibleCategories)")
-//            }
-//        }
     }
     
     private func setupUI(){
@@ -142,7 +134,7 @@ final class TrackerViewController: UIViewController{
         ])
         
         view.addSubview(collectionView)
-        let filterButtonHeight: CGFloat = 50.0 
+        let filterButtonHeight: CGFloat = 50.0
         let bottomPadding: CGFloat = 16.0
         
         let totalBottomInset = filterButtonHeight + bottomPadding
@@ -168,7 +160,7 @@ final class TrackerViewController: UIViewController{
         navigationItem.hidesSearchBarWhenScrolling = false
         
         let addButton = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(addButtonTapped))
-        addButton.tintColor = .black
+        addButton.tintColor = .label
         navigationItem.leftBarButtonItem = addButton
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)

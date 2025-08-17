@@ -33,6 +33,8 @@
 		4A645CE02E512AE6005E1C45 /* Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A645CDF2E512AE6005E1C45 /* Filter.swift */; };
 		4A645CE42E512DB0005E1C45 /* FilterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A645CE32E512DB0005E1C45 /* FilterViewModel.swift */; };
 		4A645CE62E512DBD005E1C45 /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A645CE52E512DBD005E1C45 /* FilterViewController.swift */; };
+		4A645CE82E520F92005E1C45 /* StatisticsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A645CE72E520F92005E1C45 /* StatisticsCell.swift */; };
+		4A645CEA2E520FC8005E1C45 /* CustomGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A645CE92E520FC8005E1C45 /* CustomGradientView.swift */; };
 		4A76A30E2E4EADD600FAC43A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4A76A30C2E4EADD600FAC43A /* Localizable.strings */; };
 		4A76A3112E4EADF200FAC43A /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 4A76A30F2E4EADF200FAC43A /* Localizable.stringsdict */; };
 		4A88B8F62E41469A006DB110 /* TrackerHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A88B8F52E41469A006DB110 /* TrackerHeader.swift */; };
@@ -83,6 +85,8 @@
 		4A645CDF2E512AE6005E1C45 /* Filter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Filter.swift; sourceTree = "<group>"; };
 		4A645CE32E512DB0005E1C45 /* FilterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterViewModel.swift; sourceTree = "<group>"; };
 		4A645CE52E512DBD005E1C45 /* FilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
+		4A645CE72E520F92005E1C45 /* StatisticsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsCell.swift; sourceTree = "<group>"; };
+		4A645CE92E520FC8005E1C45 /* CustomGradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomGradientView.swift; sourceTree = "<group>"; };
 		4A76A30D2E4EADD600FAC43A /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Tracker/Base.lproj/Localizable.strings; sourceTree = SOURCE_ROOT; };
 		4A76A3102E4EADF200FAC43A /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = Base; path = Tracker/Base.lproj/Localizable.stringsdict; sourceTree = SOURCE_ROOT; };
 		4A76A3122E4EB60700FAC43A /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = ru; path = ../ru.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
@@ -163,6 +167,7 @@
 				4AF287022E4A8E8000B133EC /* UITextField+Extensions.swift */,
 				4AF287042E4A8E9800B133EC /* Placeholder.swift */,
 				4A645CDD2E5121D0005E1C45 /* UICollectionView+Extensions.swift */,
+				4A645CE92E520FC8005E1C45 /* CustomGradientView.swift */,
 			);
 			path = "Helpers + Extensions ";
 			sourceTree = "<group>";
@@ -188,6 +193,7 @@
 			isa = PBXGroup;
 			children = (
 				1BCB6DEB2DC94BC5003E6FD8 /* StatisticsViewController.swift */,
+				4A645CE72E520F92005E1C45 /* StatisticsCell.swift */,
 			);
 			path = StatisticsView;
 			sourceTree = "<group>";
@@ -411,6 +417,8 @@
 				4AF287012E4A8E6200B133EC /* UIView+Extensions.swift in Sources */,
 				4ADD836E2DFE042E006E3C1A /* Tracker.swift in Sources */,
 				4AF286D32E4913CF00B133EC /* Flags.swift in Sources */,
+				4A645CE82E520F92005E1C45 /* StatisticsCell.swift in Sources */,
+				4A645CEA2E520FC8005E1C45 /* CustomGradientView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

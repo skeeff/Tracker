@@ -22,6 +22,7 @@ final class HabbitCreatorViewController: UIViewController {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = NSLocalizedString("new_habit", comment: "")
+        label.textColor = .label
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -41,8 +42,8 @@ final class HabbitCreatorViewController: UIViewController {
         let textField = UITextField()
         textField.layer.cornerRadius = 16
         textField.placeholder = NSLocalizedString("tracker_name_placeholder", comment: "")
-        textField.backgroundColor = .systemGray6
-        textField.textColor = .black
+        textField.backgroundColor = .secondarySystemBackground
+        textField.textColor = .label
         textField.setLeftPaddingPoints(12)
         textField.setRightPaddingPoints(12)
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -54,15 +55,15 @@ final class HabbitCreatorViewController: UIViewController {
         button.layer.cornerRadius = 16
         button.layer.masksToBounds = true
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = .black
-        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = .systemBackground
+        button.setTitleColor(.label, for: .normal)
         return button
     }()
     private lazy var cancelButton: UIButton = {
         let cancelButton = UIButton(type: .system)
         cancelButton.setTitle(NSLocalizedString("cancel", comment: ""), for: .normal)
         cancelButton.setTitleColor(.systemRed, for: .normal)
-        cancelButton.backgroundColor = .white
+        cancelButton.backgroundColor = .systemBackground
         cancelButton.layer.cornerRadius = 16
         cancelButton.layer.borderWidth = 1
         cancelButton.layer.borderColor = UIColor.systemRed.cgColor
@@ -160,10 +161,11 @@ final class HabbitCreatorViewController: UIViewController {
         textField.delegate = self
         updateCreateButtonState()
         categoryViewModel.delegate = self
+        view.backgroundColor = .systemBackground
     }
     
     private func setupUI() {
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         view.addSubview(scrollView)
         view.addSubview(titleLabel)
         view.addSubview(createButton)
@@ -224,7 +226,7 @@ final class HabbitCreatorViewController: UIViewController {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.backgroundColor = .white
+        tableView.backgroundColor = .secondarySystemBackground
         tableView.layoutMargins = .zero
         tableView.cellLayoutMarginsFollowReadableWidth = false
         tableView.separatorInset = .zero
@@ -401,11 +403,11 @@ final class HabbitCreatorViewController: UIViewController {
         if createButton.isEnabled != shouldBeEnabled {
             UIView.transition(with: createButton, duration: 0.3, options: .transitionCrossDissolve) {
                 self.createButton.isEnabled = shouldBeEnabled
-                self.createButton.backgroundColor = shouldBeEnabled ? .black : .systemGray3
+                self.createButton.backgroundColor = shouldBeEnabled ? .systemBackground : .secondarySystemBackground
             }
         } else {
             createButton.isEnabled = shouldBeEnabled
-            createButton.backgroundColor = shouldBeEnabled ? .black : .systemGray3
+            createButton.backgroundColor = shouldBeEnabled ? .systemBackground : .secondarySystemBackground
         }
     }
 }
@@ -439,10 +441,10 @@ extension HabbitCreatorViewController: UITableViewDataSource, UITableViewDelegat
         let option = options[indexPath.row]
         cell.textLabel?.text = option
         cell.accessoryType = .disclosureIndicator
-        cell.backgroundColor = .systemGray6
+        cell.backgroundColor = .secondarySystemBackground
         cell.layer.cornerRadius = 16
         cell.detailTextLabel?.text = nil
-        if indexPath.row == 0 { 
+        if indexPath.row == 0 {
             cell.detailTextLabel?.text = selectedCategory
             cell.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
             cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)

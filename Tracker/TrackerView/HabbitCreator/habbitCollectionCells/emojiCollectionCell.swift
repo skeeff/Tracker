@@ -6,6 +6,7 @@ final class EmojiCollectionCell: UICollectionViewCell {
     private lazy var emojiLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
+        label.textColor = .label
         label.font = UIFont.systemFont(ofSize: 32)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -29,17 +30,34 @@ final class EmojiCollectionCell: UICollectionViewCell {
     }
     func configure(with emoji: String){
         emojiLabel.text = emoji
+        emojiLabel.textColor = .label
         
     }
     func setSelected(_ isSelected: Bool) {
         if isSelected {
-            backgroundColor = UIColor(white: 0, alpha: 0.12)
+            backgroundColor = UIColor { traitCollection in
+                if traitCollection.userInterfaceStyle == .dark {
+                    return UIColor.white.withAlphaComponent(0.2) // белое выделение в Dark
+                } else {
+                    return UIColor.black.withAlphaComponent(0.1) // тёмное выделение в Light
+                }
+            }
             layer.cornerRadius = 16
         } else {
             backgroundColor = .clear
             layer.cornerRadius = 0
         }
     }
+
+//    func setSelected(_ isSelected: Bool) {
+//        if isSelected {
+//            backgroundColor = UIColor(white: 0, alpha: 0.12)
+//            layer.cornerRadius = 16
+//        } else {
+//            backgroundColor = .clear
+//            layer.cornerRadius = 0
+//        }
+//    }
 }
 
 
