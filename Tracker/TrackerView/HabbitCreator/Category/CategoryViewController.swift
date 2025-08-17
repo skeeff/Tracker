@@ -172,7 +172,7 @@ final class CategoryViewController: UIViewController {
         }
     }
     
-    @objc private func didTapButton() {
+    @objc private func didTapButton() {        
         switch viewModel.state {
         case .onboarding, .choose:
             viewModel.didTapAddCategoryButton()

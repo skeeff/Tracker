@@ -151,6 +151,13 @@ extension FilterViewController: UITableViewDelegate {
         _ tableView: UITableView,
         didSelectRowAt indexPath: IndexPath
     ) {
+        
+        AnalyticsService.trackEvent(AnalyticsEvent(
+             event: .open,
+             screen: .main,
+             item: .selectedFilter)
+         )
+        
         viewModel.setSelected(filter: filters[indexPath.row])
         self.dismiss(animated: true)
     }

@@ -117,7 +117,7 @@ final class TrackerViewController: UIViewController{
         setupInitialData()
         dataProvider.delegate = self
         reloadData()
-    
+        
     }
     
     private func setupUI(){
@@ -297,6 +297,13 @@ final class TrackerViewController: UIViewController{
     //MARK: objc
     @objc
     private func addButtonTapped(){
+        
+        AnalyticsService.trackEvent(AnalyticsEvent(
+            event: .click,
+            screen: .createNewTrack,
+            item: .newHabit)
+        )
+        
         let habbitCreatorVC = HabbitCreatorViewController(dataProvider: dataProvider)
         habbitCreatorVC.modalPresentationStyle = .pageSheet
         habbitCreatorVC.modalTransitionStyle = .coverVertical
@@ -306,6 +313,13 @@ final class TrackerViewController: UIViewController{
     
     @objc
     private func datePickerValueChanged(_ sender: UIDatePicker) {
+        
+        AnalyticsService.trackEvent(AnalyticsEvent(
+            event: .click,
+            screen: .main,
+            item: .datePicker)
+        )
+        
         reloadData()
         filterTrackersBySelectedDate(sender)
         setFilter()
@@ -315,6 +329,12 @@ final class TrackerViewController: UIViewController{
     
     @objc
     private func didTapFilterButton() {
+        
+        AnalyticsService.trackEvent(AnalyticsEvent(
+            event: .click,
+            screen: .main,
+            item: .filter)
+        )
         
         let viewModel = FilterViewModel(selectedFilter: self.currentFilter)
         viewModel.delegate = self
@@ -446,7 +466,13 @@ extension TrackerViewController: TrackerCellDelegate {
     }
     
     func editTracker(_ tracker: Tracker) {
-        // Find the category for this tracker
+        
+        AnalyticsService.trackEvent(AnalyticsEvent(
+            event: .click,
+            screen: .main,
+            item: .editTrack)
+        )
+        
         let category = findCategoryForTracker(tracker)
         
         let habbitCreatorVC = HabbitCreatorViewController(dataProvider: dataProvider, trackerToEdit: tracker)
@@ -467,6 +493,13 @@ extension TrackerViewController: TrackerCellDelegate {
     }
     
     func deleteTracker(_ tracker: Tracker) {
+        
+        AnalyticsService.trackEvent(AnalyticsEvent(
+            event: .click,
+            screen: .main,
+            item: .deleteTrack)
+        )
+        
         showDeleteConfirmation(for: tracker)
     }
     
@@ -488,6 +521,12 @@ extension TrackerViewController: TrackerCellDelegate {
 
 extension TrackerViewController: UISearchControllerDelegate {
     func willPresentSearchController(_ searchController: UISearchController) {
+        
+        AnalyticsService.trackEvent(AnalyticsEvent(
+            event: .open,
+            screen: .main,
+            item: .searchBar)
+        )
         
         isSearch = true
         collectionView.reloadData()

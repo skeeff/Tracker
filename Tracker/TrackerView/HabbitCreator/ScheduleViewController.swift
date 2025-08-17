@@ -88,6 +88,12 @@ final class ScheduleViewController: UIViewController {
     }
     
     @objc func doneButtonTapped() {
+        AnalyticsService.trackEvent(AnalyticsEvent(
+               event: .click,
+               screen: .timetableVC,
+               item: .setupTimetable)
+           )
+        
         delegate?.didSelectSchedule(selectedWeekdays)
         self.dismiss(animated: true)
     }

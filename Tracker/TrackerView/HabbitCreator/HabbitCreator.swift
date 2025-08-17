@@ -303,6 +303,13 @@ final class HabbitCreatorViewController: UIViewController {
     }
     
     @objc private func createButtonTapped() {
+        
+        AnalyticsService.trackEvent(AnalyticsEvent(
+            event: .click,
+            screen: .newHabitOrEvent,
+            item: .create)
+        )
+        
         guard let trackerName = textField.text, !trackerName.isEmpty else {
             warningLabel.isHidden = false
             return
@@ -391,6 +398,13 @@ final class HabbitCreatorViewController: UIViewController {
     }
 
     @objc private func cancelButtonTapped(){
+        
+        AnalyticsService.trackEvent(AnalyticsEvent(
+            event: .click,
+            screen: .newHabitOrEvent,
+            item: .cancel)
+        )
+        
         self.dismiss(animated: true)
     }
     

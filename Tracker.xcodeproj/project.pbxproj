@@ -35,6 +35,11 @@
 		4A645CE62E512DBD005E1C45 /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A645CE52E512DBD005E1C45 /* FilterViewController.swift */; };
 		4A645CE82E520F92005E1C45 /* StatisticsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A645CE72E520F92005E1C45 /* StatisticsCell.swift */; };
 		4A645CEA2E520FC8005E1C45 /* CustomGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A645CE92E520FC8005E1C45 /* CustomGradientView.swift */; };
+		4A645CED2E523508005E1C45 /* AppMetricaCore in Frameworks */ = {isa = PBXBuildFile; productRef = 4A645CEC2E523508005E1C45 /* AppMetricaCore */; };
+		4A645CF02E52352D005E1C45 /* AnalyticService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A645CEF2E52352D005E1C45 /* AnalyticService.swift */; };
+		4A645CF32E5235A2005E1C45 /* AnalyticEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A645CF22E5235A2005E1C45 /* AnalyticEvent.swift */; };
+		4A645CF62E5239F4005E1C45 /* YandexMobileMetrica in Frameworks */ = {isa = PBXBuildFile; productRef = 4A645CF52E5239F4005E1C45 /* YandexMobileMetrica */; };
+		4A645CF82E5239F4005E1C45 /* YandexMobileMetricaCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = 4A645CF72E5239F4005E1C45 /* YandexMobileMetricaCrashes */; };
 		4A76A30E2E4EADD600FAC43A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4A76A30C2E4EADD600FAC43A /* Localizable.strings */; };
 		4A76A3112E4EADF200FAC43A /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 4A76A30F2E4EADF200FAC43A /* Localizable.stringsdict */; };
 		4A88B8F62E41469A006DB110 /* TrackerHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A88B8F52E41469A006DB110 /* TrackerHeader.swift */; };
@@ -87,6 +92,8 @@
 		4A645CE52E512DBD005E1C45 /* FilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
 		4A645CE72E520F92005E1C45 /* StatisticsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsCell.swift; sourceTree = "<group>"; };
 		4A645CE92E520FC8005E1C45 /* CustomGradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomGradientView.swift; sourceTree = "<group>"; };
+		4A645CEF2E52352D005E1C45 /* AnalyticService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticService.swift; sourceTree = "<group>"; };
+		4A645CF22E5235A2005E1C45 /* AnalyticEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticEvent.swift; sourceTree = "<group>"; };
 		4A76A30D2E4EADD600FAC43A /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Tracker/Base.lproj/Localizable.strings; sourceTree = SOURCE_ROOT; };
 		4A76A3102E4EADF200FAC43A /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = Base; path = Tracker/Base.lproj/Localizable.stringsdict; sourceTree = SOURCE_ROOT; };
 		4A76A3122E4EB60700FAC43A /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = ru; path = ../ru.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
@@ -112,6 +119,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4A645CF82E5239F4005E1C45 /* YandexMobileMetricaCrashes in Frameworks */,
+				4A645CED2E523508005E1C45 /* AppMetricaCore in Frameworks */,
+				4A645CF62E5239F4005E1C45 /* YandexMobileMetrica in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -249,6 +259,15 @@
 			path = Filter;
 			sourceTree = "<group>";
 		};
+		4A645CF12E523596005E1C45 /* Analytics */ = {
+			isa = PBXGroup;
+			children = (
+				4A645CEF2E52352D005E1C45 /* AnalyticService.swift */,
+				4A645CF22E5235A2005E1C45 /* AnalyticEvent.swift */,
+			);
+			path = Analytics;
+			sourceTree = "<group>";
+		};
 		4A76A2F52E4E9E9900FAC43A /* Localization */ = {
 			isa = PBXGroup;
 			children = (
@@ -263,6 +282,7 @@
 			children = (
 				4AF286D22E4913C700B133EC /* Flags.swift */,
 				4A88B8FE2E414769006DB110 /* DataProvider.swift */,
+				4A645CF12E523596005E1C45 /* Analytics */,
 			);
 			path = Servicess;
 			sourceTree = "<group>";
@@ -351,6 +371,10 @@
 				en,
 			);
 			mainGroup = 1BCB6DC12DC8CFDF003E6FD8;
+			packageReferences = (
+				4A645CEB2E523508005E1C45 /* XCRemoteSwiftPackageReference "appmetrica-sdk-ios" */,
+				4A645CF42E5239F4005E1C45 /* XCRemoteSwiftPackageReference "metrica-sdk-ios" */,
+			);
 			productRefGroup = 1BCB6DCB2DC8CFDF003E6FD8 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -380,6 +404,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4A88B8F82E4146E2006DB110 /* UIColorMarshalling.swift in Sources */,
+				4A645CF02E52352D005E1C45 /* AnalyticService.swift in Sources */,
 				4A6315CB2E36500300901AED /* TrackerDB.xcdatamodeld in Sources */,
 				4A4C014A2E1837B300D6E0A0 /* ScheduleViewController.swift in Sources */,
 				1BCB6DE62DC949D3003E6FD8 /* TabBarViewController.swift in Sources */,
@@ -415,6 +440,7 @@
 				1BCB6DD02DC8CFDF003E6FD8 /* SceneDelegate.swift in Sources */,
 				4A88B8FA2E4146FF006DB110 /* DaysValueTransformer.swift in Sources */,
 				4AF287012E4A8E6200B133EC /* UIView+Extensions.swift in Sources */,
+				4A645CF32E5235A2005E1C45 /* AnalyticEvent.swift in Sources */,
 				4ADD836E2DFE042E006E3C1A /* Tracker.swift in Sources */,
 				4AF286D32E4913CF00B133EC /* Flags.swift in Sources */,
 				4A645CE82E520F92005E1C45 /* StatisticsCell.swift in Sources */,
@@ -662,6 +688,43 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		4A645CEB2E523508005E1C45 /* XCRemoteSwiftPackageReference "appmetrica-sdk-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/appmetrica/appmetrica-sdk-ios";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.12.0;
+			};
+		};
+		4A645CF42E5239F4005E1C45 /* XCRemoteSwiftPackageReference "metrica-sdk-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/yandexmobile/metrica-sdk-ios";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.5.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4A645CEC2E523508005E1C45 /* AppMetricaCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4A645CEB2E523508005E1C45 /* XCRemoteSwiftPackageReference "appmetrica-sdk-ios" */;
+			productName = AppMetricaCore;
+		};
+		4A645CF52E5239F4005E1C45 /* YandexMobileMetrica */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4A645CF42E5239F4005E1C45 /* XCRemoteSwiftPackageReference "metrica-sdk-ios" */;
+			productName = YandexMobileMetrica;
+		};
+		4A645CF72E5239F4005E1C45 /* YandexMobileMetricaCrashes */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4A645CF42E5239F4005E1C45 /* XCRemoteSwiftPackageReference "metrica-sdk-ios" */;
+			productName = YandexMobileMetricaCrashes;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		4A6315C92E36500300901AED /* TrackerDB.xcdatamodeld */ = {

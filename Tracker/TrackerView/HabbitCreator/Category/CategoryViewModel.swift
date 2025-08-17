@@ -76,10 +76,22 @@ final class CategoryViewModel: CategoryViewModelProtocol {
         selectedCategory = newCategoryName
         delegate?.category(selectedCategory ?? "")
         updateState()
+        
+        AnalyticsService.trackEvent(AnalyticsEvent(
+                  event: .click,
+                  screen: .categoryVC,
+                  item: .selectedCategory)
+              )
     }
     
     func didTapAddCategoryButton() {
         state = .create
+        
+        AnalyticsService.trackEvent(AnalyticsEvent(
+            event: .click,
+            screen: .categoryVC,
+            item: .addedCategory)
+        )
     }
     
     func isSelected(at indexPath: IndexPath) -> Bool {

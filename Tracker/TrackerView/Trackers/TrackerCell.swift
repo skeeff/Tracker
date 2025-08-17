@@ -175,6 +175,13 @@ final class TrackerCell: UICollectionViewCell {
     
     
     @objc private func addButtonTapped(){
+        
+        AnalyticsService.trackEvent(AnalyticsEvent(
+            event: .click,
+            screen: .main,
+            item: .complete)
+        )
+        
         guard addButton.isUserInteractionEnabled, let id = trackerID else { return }
         animateAddButtonTapped()
         
