@@ -56,7 +56,8 @@ final class HabbitCreatorViewController: UIViewController {
         button.layer.masksToBounds = true
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = .systemBackground
-        button.setTitleColor(.label, for: .normal)
+        button.tintColor = .label
+        button.setTitleColor(.systemBackground, for: .normal)
         return button
     }()
     private lazy var cancelButton: UIButton = {
@@ -87,7 +88,7 @@ final class HabbitCreatorViewController: UIViewController {
     
     private lazy var emojiCollectionHeaderLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .black
+        label.textColor = .label
         label.font = .systemFont(ofSize: 19, weight: .bold)
         label.text = NSLocalizedString("emoji", comment: "")
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -109,7 +110,7 @@ final class HabbitCreatorViewController: UIViewController {
     
     private lazy var colorCollectionHeaderLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .black
+        label.textColor = .label
         label.font = .systemFont(ofSize: 19, weight: .bold)
         label.text = NSLocalizedString("color", comment: "")
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -142,6 +143,8 @@ final class HabbitCreatorViewController: UIViewController {
     private var selectedSchedule: Set<Weekday> = []
     private var selectedEmoji: String?
     private var selectedColor: UIColor?
+    
+    private let habbitButtonColor = UIColor(resource: .darkAppearenceButton)
     //edit properties
     private var isEditingMode: Bool = false
     private var trackerToEdit: Tracker?
@@ -403,11 +406,11 @@ final class HabbitCreatorViewController: UIViewController {
         if createButton.isEnabled != shouldBeEnabled {
             UIView.transition(with: createButton, duration: 0.3, options: .transitionCrossDissolve) {
                 self.createButton.isEnabled = shouldBeEnabled
-                self.createButton.backgroundColor = shouldBeEnabled ? .systemBackground : .secondarySystemBackground
+                self.createButton.backgroundColor = shouldBeEnabled ? self.habbitButtonColor : UIColor(resource: .ypGrey)
             }
         } else {
             createButton.isEnabled = shouldBeEnabled
-            createButton.backgroundColor = shouldBeEnabled ? .systemBackground : .secondarySystemBackground
+            createButton.backgroundColor = shouldBeEnabled ? habbitButtonColor : UIColor(resource: .ypGrey)
         }
     }
 }
@@ -568,7 +571,7 @@ extension HabbitCreatorViewController: UICollectionViewDataSource, UICollectionV
                 }
             }
             if let cell = collectionView.cellForItem(at: indexPath) as? EmojiCollectionCell{
-                cell.backgroundColor = UIColor(white: 0, alpha: 0.12)
+                cell.backgroundColor = UIColor(resource: .emojiSelection)
                 cell.layer.cornerRadius = 16
             }
             selectedEmoji = AppResources.trackerEmojis[indexPath.item]

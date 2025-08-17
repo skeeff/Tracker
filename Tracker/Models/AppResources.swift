@@ -27,4 +27,5 @@ struct AppResources {
         UIColor(resource: .ypSand),
         UIColor(resource: .ypViolet)
     ]
+    
 }

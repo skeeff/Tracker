@@ -52,7 +52,7 @@ final class CategoryViewController: UIViewController {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 16
-        button.backgroundColor = .black
+        button.backgroundColor = UIColor(resource: .darkAppearenceButton)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.systemBackground, for: .normal)
         button.addTarget(
@@ -244,7 +244,7 @@ extension CategoryViewController: UITableViewDataSource {
         
         cell.textLabel?.text = category.category
         cell.selectionStyle = .none
-        cell.backgroundColor = .systemGray6
+        cell.backgroundColor = .secondarySystemBackground
         cell.layer.cornerRadius = 16
         cell.layer.masksToBounds = true
         cell.preservesSuperviewLayoutMargins = false

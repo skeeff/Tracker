@@ -22,7 +22,7 @@ final class FilterViewController: UIViewController {
         let tableView = UITableView(frame: .zero, style: .plain)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.separatorStyle = .singleLine
-        tableView.separatorColor = .systemGray6
+        tableView.separatorColor = UIColor(resource: .ypGrey)
         tableView.separatorInset = .init(top: 0, left: 16, bottom: 1, right: 16)
         tableView.tableHeaderView = UIView()
         tableView.allowsMultipleSelection = false
@@ -94,7 +94,7 @@ extension FilterViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath ) -> UITableViewCell {
         
         let cell = UITableViewCell(style: .default, reuseIdentifier: "cell")
-        cell.backgroundColor = .systemGray6
+        cell.backgroundColor = .secondarySystemBackground
         cell.textLabel?.text = filters[indexPath.row].localized
         cell.selectionStyle = .default
         cell.layer.cornerRadius = 16

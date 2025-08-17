@@ -9,6 +9,7 @@ final class ScheduleViewController: UIViewController {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = NSLocalizedString("schedule", comment: "")
+        label.textColor = .label
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -17,8 +18,8 @@ final class ScheduleViewController: UIViewController {
     private lazy var doneButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle(NSLocalizedString("done", comment: ""), for: .normal)
-        button.backgroundColor = .black
-        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = UIColor(resource: .darkAppearenceButton)
+        button.setTitleColor(.systemBackground, for: .normal)
         button.layer.cornerRadius = 16
         button.layer.masksToBounds = true
         button.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
@@ -38,7 +39,7 @@ final class ScheduleViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         setupTableView()
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         tableView.register(ScheduleCell.self, forCellReuseIdentifier: ScheduleCell.reuseIdentifier)
     }
     
@@ -60,7 +61,7 @@ final class ScheduleViewController: UIViewController {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.backgroundColor = .white
+        tableView.backgroundColor = .systemBackground
         tableView.layoutMargins = .zero
         tableView.cellLayoutMarginsFollowReadableWidth = false
         tableView.separatorInset = .zero
@@ -101,7 +102,7 @@ extension ScheduleViewController: UITableViewDataSource, UITableViewDelegate {
         let isOn = selectedWeekdays.contains(weekday)
         cell.configure(with: weekday.description, isOn: isOn)
 //        cell.configure(with: weekday.description, isOn: false)
-        cell.backgroundColor = .systemGray6
+        cell.backgroundColor = .secondarySystemBackground
         cell.layer.cornerRadius = 16
         if indexPath.row == 0 {
             cell.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
