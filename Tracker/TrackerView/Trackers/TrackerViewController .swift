@@ -142,6 +142,12 @@ final class TrackerViewController: UIViewController{
         ])
         
         view.addSubview(collectionView)
+        let filterButtonHeight: CGFloat = 50.0 
+        let bottomPadding: CGFloat = 16.0
+        
+        let totalBottomInset = filterButtonHeight + bottomPadding
+        
+        collectionView.contentInset.bottom = totalBottomInset
         
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: 206),
