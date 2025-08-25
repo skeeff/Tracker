@@ -2,13 +2,16 @@ import UIKit
 
 protocol HabbitCreatorProtocol: AnyObject {
     func didCreateTracker()
+    func didUpdateTracker()
 }
 
 final class HabbitCreatorViewController: UIViewController {
     
-    init(dataProvider: DataProviderProtocol) {
+    init(dataProvider: DataProviderProtocol, trackerToEdit: Tracker? = nil) {
         self.dataProvider = dataProvider
         self.categoryViewModel = CategoryViewModel(dataProvider: dataProvider)
+        self.trackerToEdit = trackerToEdit
+        self.isEditingMode = trackerToEdit != nil
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -18,7 +21,8 @@ final class HabbitCreatorViewController: UIViewController {
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Новая привычка"
+        label.text = NSLocalizedString("new_habit", comment: "")
+        label.textColor = .label
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -26,7 +30,7 @@ final class HabbitCreatorViewController: UIViewController {
     }()
     private lazy var warningLabel: UILabel = {
         let label = UILabel()
-        label.text = "Ограничение 38 символов"
+        label.text = NSLocalizedString("character_limit", comment: "")
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         label.textColor = .systemRed
@@ -37,9 +41,9 @@ final class HabbitCreatorViewController: UIViewController {
     private lazy var textField: UITextField = {
         let textField = UITextField()
         textField.layer.cornerRadius = 16
-        textField.placeholder = "Введите название трекера"
-        textField.backgroundColor = .systemGray6
-        textField.textColor = .black
+        textField.placeholder = NSLocalizedString("tracker_name_placeholder", comment: "")
+        textField.backgroundColor = .secondarySystemBackground
+        textField.textColor = .label
         textField.setLeftPaddingPoints(12)
         textField.setRightPaddingPoints(12)
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -47,19 +51,20 @@ final class HabbitCreatorViewController: UIViewController {
     }()
     private lazy var createButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Создать", for: .normal)
+        button.setTitle(NSLocalizedString("create", comment: ""), for: .normal)
         button.layer.cornerRadius = 16
         button.layer.masksToBounds = true
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = .black
-        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = .systemBackground
+        button.tintColor = .label
+        button.setTitleColor(.systemBackground, for: .normal)
         return button
     }()
     private lazy var cancelButton: UIButton = {
         let cancelButton = UIButton(type: .system)
-        cancelButton.setTitle("Отменить", for: .normal)
+        cancelButton.setTitle(NSLocalizedString("cancel", comment: ""), for: .normal)
         cancelButton.setTitleColor(.systemRed, for: .normal)
-        cancelButton.backgroundColor = .white
+        cancelButton.backgroundColor = .systemBackground
         cancelButton.layer.cornerRadius = 16
         cancelButton.layer.borderWidth = 1
         cancelButton.layer.borderColor = UIColor.systemRed.cgColor
@@ -83,9 +88,9 @@ final class HabbitCreatorViewController: UIViewController {
     
     private lazy var emojiCollectionHeaderLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .black
+        label.textColor = .label
         label.font = .systemFont(ofSize: 19, weight: .bold)
-        label.text = "Emoji"
+        label.text = NSLocalizedString("emoji", comment: "")
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -105,9 +110,9 @@ final class HabbitCreatorViewController: UIViewController {
     
     private lazy var colorCollectionHeaderLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .black
+        label.textColor = .label
         label.font = .systemFont(ofSize: 19, weight: .bold)
-        label.text = "Цвет"
+        label.text = NSLocalizedString("color", comment: "")
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -130,11 +135,20 @@ final class HabbitCreatorViewController: UIViewController {
     private lazy var scheduleVC = ScheduleViewController()
     private lazy var categoryVC = CategoryViewController(viewModel: categoryViewModel)
     
-    private let options = ["Категория", "Расписание"]
+    private let options = [
+        NSLocalizedString("category", comment: ""),
+        NSLocalizedString("schedule", comment: "")
+    ]
     private var selectedCategory: String = ""
     private var selectedSchedule: Set<Weekday> = []
     private var selectedEmoji: String?
     private var selectedColor: UIColor?
+    
+    private let habbitButtonColor = UIColor(resource: .darkAppearenceButton)
+    //edit properties
+    private var isEditingMode: Bool = false
+    private var trackerToEdit: Tracker?
+    private var originalCategory: String = ""
     
     private let tableView = UITableView(frame: .zero, style: .insetGrouped)
     
@@ -150,10 +164,11 @@ final class HabbitCreatorViewController: UIViewController {
         textField.delegate = self
         updateCreateButtonState()
         categoryViewModel.delegate = self
+        view.backgroundColor = .systemBackground
     }
     
     private func setupUI() {
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         view.addSubview(scrollView)
         view.addSubview(titleLabel)
         view.addSubview(createButton)
@@ -214,7 +229,7 @@ final class HabbitCreatorViewController: UIViewController {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.backgroundColor = .white
+        tableView.backgroundColor = .secondarySystemBackground
         tableView.layoutMargins = .zero
         tableView.cellLayoutMarginsFollowReadableWidth = false
         tableView.separatorInset = .zero
@@ -261,27 +276,135 @@ final class HabbitCreatorViewController: UIViewController {
         ])
     }
     
-    @objc private func createButtonTapped(){
-        let trackerName = textField.text ?? ""
-        guard let selectedEmoji else { return }
-        guard let selectedColor else { return }
+    
+    func configureForEditing(tracker: Tracker, category: String) {
+        self.trackerToEdit = tracker
+        self.originalCategory = category
+        self.isEditingMode = true
         
-        if !trackerName.isEmpty && !selectedCategory.isEmpty && !selectedSchedule.isEmpty {
-            let newTracker = Tracker(id: UUID(),
-                                     name: trackerName,
-                                     emoji: selectedEmoji,
-                                     color: selectedColor,
-                                     schedule: Array(self.selectedSchedule))
-            
-            dataProvider.addTrackertoCategory(newTracker, selectedCategory)
-            delegate?.didCreateTracker()
-            self.dismiss(animated: true)
+        titleLabel.text = NSLocalizedString("edit_tracker", comment: "Edit tracker title")
+        createButton.setTitle(NSLocalizedString("save", comment: "Save button title"), for: .normal)
+        
+        textField.text = tracker.name
+        selectedEmoji = tracker.emoji
+        selectedColor = tracker.color
+        selectedSchedule = Set(tracker.schedule)
+        selectedCategory = category
+        
+        emojiCollectionView.reloadData()
+        colorCollectionView.reloadData()
+        
+        updateEmojiSelection()
+        updateColorSelection()
+        
+        tableView.reloadData()
+        
+        updateCreateButtonState()
+    }
+    
+    @objc private func createButtonTapped() {
+        
+        AnalyticsService.trackEvent(AnalyticsEvent(
+            event: .click,
+            screen: .newHabitOrEvent,
+            item: .create)
+        )
+        
+        guard let trackerName = textField.text, !trackerName.isEmpty else {
+            warningLabel.isHidden = false
+            return
+        }
+        
+        if isEditingMode {
+            // Update existing tracker
+            updateExistingTracker(name: trackerName)
         } else {
-            print("ZAPOLNENO NE VSE")
+            // Create new tracker
+            createNewTracker(name: trackerName)
         }
     }
     
+    private func createNewTracker(name: String) {
+        guard let selectedEmoji else { return }
+        guard let selectedColor else { return }
+        if !name.isEmpty && !selectedCategory.isEmpty && !selectedSchedule.isEmpty{
+            let tracker = Tracker(
+                id: UUID(),
+                name: name,
+                emoji: selectedEmoji,
+                color: selectedColor,
+                schedule: Array(self.selectedSchedule)
+            )
+            
+            dataProvider.addTrackertoCategory(tracker, selectedCategory)
+            delegate?.didCreateTracker()
+            dismiss(animated: true)
+        }
+    }
+    
+    private func updateExistingTracker(name: String) {
+        guard let tracker = trackerToEdit else { return }
+        guard let selectedEmoji else { return }
+        guard let selectedColor else { return }
+        if !name.isEmpty && !selectedCategory.isEmpty && !selectedSchedule.isEmpty {
+            let updatedTracker = Tracker(
+                id: tracker.id, // Keep the same ID
+                name: name,
+                emoji: selectedEmoji,
+                color: selectedColor,
+                schedule: Array(self.selectedSchedule)
+            )
+            
+            // Update the tracker
+            dataProvider.updateTracker(updatedTracker)
+            
+            // If category changed, we need to handle that
+            if selectedCategory != originalCategory {
+                // Remove from old category and add to new category
+                dataProvider.deleteTracker(tracker)
+                dataProvider.addTrackertoCategory(updatedTracker, selectedCategory)
+            }
+            
+            delegate?.didUpdateTracker()
+            dismiss(animated: true)
+        }
+    }
+    private func updateEmojiSelection() {
+        guard let selectedEmoji = selectedEmoji else { return }
+        
+        if let index = AppResources.trackerEmojis.firstIndex(of: selectedEmoji) {
+            let indexPath = IndexPath(item: index, section: 0)
+            
+            if let cell = emojiCollectionView.cellForItem(at: indexPath) as? EmojiCollectionCell {
+                cell.setSelected(true)
+            }
+            
+            emojiCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: .centeredVertically)
+        }
+    }
+    
+    private func updateColorSelection() {
+        guard let selectedColor = selectedColor else { return }
+        
+        if let index = AppResources.trackerColors.firstIndex(of: selectedColor) {
+            let indexPath = IndexPath(item: index, section: 0)
+            
+            if let cell = colorCollectionView.cellForItem(at: indexPath) as? ColorCollectionCell {
+                cell.setSelected(true, color: selectedColor)
+            }
+            
+            colorCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: .centeredVertically)
+        }
+    }
+
     @objc private func cancelButtonTapped(){
+        
+        AnalyticsService.trackEvent(AnalyticsEvent(
+            event: .click,
+            screen: .newHabitOrEvent,
+            item: .cancel)
+        )
+        
         self.dismiss(animated: true)
     }
     
@@ -293,20 +416,16 @@ final class HabbitCreatorViewController: UIViewController {
         let isColorSelected = selectedColor != nil
         
         let shouldBeEnabled = isNameValid && isCategorySelected && isScheduleSelected && isEmojiSelected && isColorSelected
-        
-        // --- АНИМАЦИЯ ДОБАВЛЕНА ---
-        // Анимация изменения состояния кнопки создания
+        //animation test
         if createButton.isEnabled != shouldBeEnabled {
             UIView.transition(with: createButton, duration: 0.3, options: .transitionCrossDissolve) {
                 self.createButton.isEnabled = shouldBeEnabled
-                self.createButton.backgroundColor = shouldBeEnabled ? .black : .systemGray3
+                self.createButton.backgroundColor = shouldBeEnabled ? self.habbitButtonColor : UIColor(resource: .ypGrey)
             }
         } else {
             createButton.isEnabled = shouldBeEnabled
-            createButton.backgroundColor = shouldBeEnabled ? .black : .systemGray3
+            createButton.backgroundColor = shouldBeEnabled ? habbitButtonColor : UIColor(resource: .ypGrey)
         }
-        //        createButton.isEnabled = isNameValid && isCategorySelected && isScheduleSelected && isEmojiSelected && isColorSelected
-        //        createButton.backgroundColor = createButton.isEnabled ? .black : .systemGray3
     }
 }
 
@@ -339,10 +458,10 @@ extension HabbitCreatorViewController: UITableViewDataSource, UITableViewDelegat
         let option = options[indexPath.row]
         cell.textLabel?.text = option
         cell.accessoryType = .disclosureIndicator
-        cell.backgroundColor = .systemGray6
+        cell.backgroundColor = .secondarySystemBackground
         cell.layer.cornerRadius = 16
         cell.detailTextLabel?.text = nil
-        if indexPath.row == 0 { // Категория
+        if indexPath.row == 0 {
             cell.detailTextLabel?.text = selectedCategory
             cell.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
             cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
@@ -355,7 +474,7 @@ extension HabbitCreatorViewController: UITableViewDataSource, UITableViewDelegat
                 cell.detailTextLabel?.text = scheduleString
             }
             cell.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
-            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude) // Убираем разделитель для последней
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
         }
         cell.layer.masksToBounds = true
         cell.preservesSuperviewLayoutMargins = false
@@ -372,13 +491,18 @@ extension HabbitCreatorViewController: UITableViewDataSource, UITableViewDelegat
         
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.row == 0 {
-            //            print("Переход к выбору категории")
             tableView.reloadRows(at: [indexPath], with: .automatic)
             updateCreateButtonState()
+            
             let categoryNC = UINavigationController(rootViewController: categoryVC)
             present(categoryNC, animated: true, completion: nil)
         } else if indexPath.row == 1 {
             scheduleVC.delegate = self
+            
+            
+            if isEditingMode {
+                scheduleVC.setInitialSelection(selectedSchedule)
+            }
             present(scheduleVC, animated: true, completion: nil)
         }
     }
@@ -424,6 +548,12 @@ extension HabbitCreatorViewController: UICollectionViewDataSource, UICollectionV
             cell.configure(with: emoji)
             cell.layer.masksToBounds = true
             
+            if let currentSelectedEmoji = selectedEmoji, currentSelectedEmoji == emoji {
+                cell.setSelected(true)
+            } else {
+                cell.setSelected(false)
+            }
+            
             updateCreateButtonState()
             return cell
         } else {
@@ -433,6 +563,12 @@ extension HabbitCreatorViewController: UICollectionViewDataSource, UICollectionV
             let color = AppResources.trackerColors[indexPath.item]
             cell.configure(with: color)
             cell.layer.masksToBounds = true
+            
+            if let currentSelectedColor = selectedColor, currentSelectedColor == color {
+                cell.setSelected(true, color: color)
+            } else {
+                cell.setSelected(false, color: color)
+            }
             
             updateCreateButtonState()
             return cell
@@ -449,7 +585,7 @@ extension HabbitCreatorViewController: UICollectionViewDataSource, UICollectionV
                 }
             }
             if let cell = collectionView.cellForItem(at: indexPath) as? EmojiCollectionCell{
-                cell.backgroundColor = UIColor(white: 0, alpha: 0.12)
+                cell.backgroundColor = UIColor(resource: .emojiSelection)
                 cell.layer.cornerRadius = 16
             }
             selectedEmoji = AppResources.trackerEmojis[indexPath.item]

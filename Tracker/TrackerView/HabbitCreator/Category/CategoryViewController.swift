@@ -42,7 +42,7 @@ final class CategoryViewController: UIViewController {
         textField.layer.cornerRadius = 16
         textField.clearButtonMode = .whileEditing
         textField.backgroundColor = .systemGray6
-        textField.placeholder = "Введите название категории"
+        textField.placeholder = NSLocalizedString("category_name_placeholder", comment: "")
         textField.font = .systemFont(ofSize: 17, weight: .regular)
         textField.delegate = self
         return textField
@@ -52,7 +52,7 @@ final class CategoryViewController: UIViewController {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 16
-        button.backgroundColor = .black
+        button.backgroundColor = UIColor(resource: .darkAppearenceButton)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.systemBackground, for: .normal)
         button.addTarget(
@@ -130,7 +130,7 @@ final class CategoryViewController: UIViewController {
         if categoriesCount == 0 && viewModel.state != .create {
             placeholder.showPlaceholder(
                 image: UIImage(resource: .trackersPlaceholder),
-                text: "Привычки и события можно \n объединить по смыслу",
+                text: NSLocalizedString("habits_events_placeholder", comment: ""),
                 view: view
             )
             tableView.isHidden = true
@@ -150,21 +150,21 @@ final class CategoryViewController: UIViewController {
             
             switch viewModel.state {
             case .onboarding:
-                title = "Категория"
+                title = NSLocalizedString("category", comment: "")
                 textField.isHidden = true
                 tableView.isHidden = false
-                button.setTitle(NSLocalizedString("Добавить категорию", comment: ""), for: .normal)
+                button.setTitle(NSLocalizedString("add_category", comment: ""), for: .normal)
             case .choose:
-                title = "Категория"
+                title = NSLocalizedString("category", comment: "")
                 textField.isHidden = true
                 tableView.isHidden = false
-                button.setTitle(NSLocalizedString("Добавить категорию", comment: ""), for: .normal)
+                button.setTitle(NSLocalizedString("add_category", comment: ""), for: .normal)
                 placeholder.removePlaceholder()
             case .create:
-                title = "Новая категорию"
+                title = NSLocalizedString("new_category", comment: "")
                 tableView.isHidden = true
                 textField.isHidden = false
-                button.setTitle(NSLocalizedString("Готово", comment: ""), for: .normal)
+                button.setTitle(NSLocalizedString("done", comment: ""), for: .normal)
                 button.backgroundColor = .black.withAlphaComponent(0.3)
                 button.isUserInteractionEnabled = false
                 placeholder.removePlaceholder()
@@ -172,7 +172,7 @@ final class CategoryViewController: UIViewController {
         }
     }
     
-    @objc private func didTapButton() {
+    @objc private func didTapButton() {        
         switch viewModel.state {
         case .onboarding, .choose:
             viewModel.didTapAddCategoryButton()
@@ -244,7 +244,7 @@ extension CategoryViewController: UITableViewDataSource {
         
         cell.textLabel?.text = category.category
         cell.selectionStyle = .none
-        cell.backgroundColor = .systemGray6
+        cell.backgroundColor = .secondarySystemBackground
         cell.layer.cornerRadius = 16
         cell.layer.masksToBounds = true
         cell.preservesSuperviewLayoutMargins = false

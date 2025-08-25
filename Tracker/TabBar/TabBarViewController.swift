@@ -24,11 +24,19 @@ final class TabBarViewController: UITabBarController {
         let dataProvider = DataProvider(categoryStore: trackerCategoryStore, trackerStore: trackerStore, recordStore: trackerRecordStore)
         
         let trackerVC = TrackerViewController(dataProvider: dataProvider)
-        trackerVC.tabBarItem = UITabBarItem(title: "Трекеры", image: UIImage(named: "tracker_tab_inactive"), selectedImage: UIImage(named: "tracker_tab_inactive")?.withTintColor(.systemBlue))
+        trackerVC.tabBarItem = UITabBarItem(
+            title: NSLocalizedString("trackers", comment: ""),
+            image: UIImage(named: "tracker_tab_inactive"),
+            selectedImage: UIImage(named: "tracker_tab_inactive")?.withTintColor(.systemBlue)
+        )
         trackerVC.view.backgroundColor = .systemBackground
         
         let statisticsVC = StatisticsViewController()
-        statisticsVC.tabBarItem = UITabBarItem(title: "Статистика", image: UIImage(named: "statistics_tab_inactive"), selectedImage: UIImage(named: "statistics_tab_inactive")?.withTintColor(.systemBlue))
+        statisticsVC.tabBarItem = UITabBarItem(
+            title: NSLocalizedString("statistics", comment: ""),
+            image: UIImage(named: "statistics_tab_inactive"),
+            selectedImage: UIImage(named: "statistics_tab_inactive")?.withTintColor(.systemBlue)
+        )
         statisticsVC.view.backgroundColor = .systemBackground
         
         let trackersNC = UINavigationController(rootViewController: trackerVC)

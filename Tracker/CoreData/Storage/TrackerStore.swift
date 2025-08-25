@@ -11,6 +11,7 @@ protocol TrackerStoreProtocol {
     func getTrackerFromCoreDataById(_ id: UUID) -> TrackerCoreData?
     func createTracker(with tracker: Tracker) -> TrackerCoreData
     func deleteTracker(_ tracker: Tracker)
+    func updateTracker(_ tracker: Tracker)
     var delegate: TrackerStoreDelegate? { get set }
 }
 
@@ -90,6 +91,18 @@ final class TrackerStore: NSObject, TrackerStoreProtocol {
     func deleteTracker(_ tracker: Tracker) {
         guard let trackerCoreData = getTrackerFromCoreDataById(tracker.id) else { return }
         context.delete(trackerCoreData)
+        appDelegate.saveContext()
+        delegate?.didUpdateTracker()
+    }
+    
+    func updateTracker(_ tracker: Tracker) {
+        guard let trackerCoreData = getTrackerFromCoreDataById(tracker.id) else { return }
+        
+        trackerCoreData.name = tracker.name
+        trackerCoreData.emoji = tracker.emoji
+        trackerCoreData.color = uiColorMarshalling.hexString(from: tracker.color)
+        trackerCoreData.schedule = tracker.schedule as NSObject
+        
         appDelegate.saveContext()
         delegate?.didUpdateTracker()
     }

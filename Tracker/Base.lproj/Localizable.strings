@@ -1,0 +1,65 @@
+
+"days_format" = "%d дней";
+"day_format" = "%d день";
+"days_genitive_format" = "%d дня";
+/* Common */
+"cancel" = "Отменить";
+"done" = "Готово";
+"create" = "Создать";
+"add" = "Добавить";
+"search" = "Поиск";
+
+/* Main Tracker View */
+"trackers" = "Трекеры";
+"what_to_track" = "Что будем отслеживать?";
+
+/* Habit Creator */
+"new_habit" = "Новая привычка";
+"tracker_name_placeholder" = "Введите название трекера";
+"emoji" = "Emoji";
+"color" = "Цвет";
+"schedule" = "Расписание";
+"character_limit" = "Ограничение 38 символов";
+
+/* Categories */
+"category" = "Категория";
+"new_category" = "Новая категория";
+"add_category" = "Добавить категорию";
+"category_name_placeholder" = "Введите название категории";
+
+/* Statistics */
+"statistics" = "Статистика";
+"nothing_to_analyze" = "Анализировать пока нечего";
+
+/* Onboarding */
+"wow_technology" = "Вот это технологии!";
+"track_what_you_want" = "Отслеживайте только то, что хотите";
+"even_if_not_water_yoga" = "Даже если это не литры воды и йога";
+
+/* Tab Bar */
+"trackers_tab" = "Трекеры";
+"statistics_tab" = "Статистика";
+
+/* Placeholders */
+"habits_events_placeholder" = "Привычки и события можно \n объединить по смыслу";
+
+/* Schedule */
+"schedule" = "Расписание";
+"schedule_monday" = "Понедельник";
+"schedule_tuesday" = "Вторник";
+"schedule_wednesday" = "Среда";
+"schedule_thursday" = "Четверг";
+"schedule_friday" = "Пятница";
+"schedule_saturday" = "Суббота";
+"schedule_sunday" = "Воскресенье";
+/* short*/
+"schedule_monday_short" = "Пн";
+"schedule_tuesday_short" = "Вт";
+"schedule_wednesday_short" = "Среда";
+"schedule_thursday_short" = "Чт";
+"schedule_friday_short" = "Пт";
+"schedule_saturday_short" = "Сб";
+"schedule_sunday_short" = "Вс";
+//"schedule_every_day" = "Каждый день";
+//"schedule_weekdays" = "По будням";
+//"schedule_weekend" = "По выходным";

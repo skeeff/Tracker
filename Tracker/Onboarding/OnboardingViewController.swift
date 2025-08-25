@@ -24,7 +24,7 @@ final class OnboardingViewController: UIViewController {
     
     private lazy var transitionButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Вот это технологии!", for: .normal)
+        button.setTitle(NSLocalizedString("wow_technology", comment: ""), for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 16
         button.layer.masksToBounds = true
